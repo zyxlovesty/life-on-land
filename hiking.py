@@ -36,40 +36,77 @@ def gpx_to_points(gpx_path):
     return LineString(route_points)
 
 @app.callback(
-    [Output('trail-layer', 'children'), Output('trail-map', 'center')],
-    [Input('search-button', 'n_clicks')],
-    [State('trail-dropdown', 'value')]
+    [Output('filtered-trails', 'children'), Output('trail-layer', 'children'), Output('trail-map', 'center')],
+    [Input('search-button', 'n_clicks'), Input('search-button2', 'n_clicks')],
+    [State('trail-dropdown', 'value'),
+     State('distance-slider', 'value'),
+     State('elevation-slider', 'value'),
+     State('duration-slider', 'value'),
+     State('loop-radio', 'value')]
 )
+def update_filtered_trails(n_clicks1, n_clicks2, selected_trails, distance, elevation, duration, loop):
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        button_id = None
+    else:
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
-def update_map(n_clicks, selected_trails):
-    if n_clicks == 0:  # Only update when the search button is clicked
-        return dash.no_update, dash.no_update
-    
-    if not selected_trails:
-        return [], dash.no_update
-    
+    if button_id == 'search-button':
+        n_clicks = n_clicks1
+    elif button_id == 'search-button2':
+        n_clicks = n_clicks2
+    else:
+        n_clicks = 0
+
+    if n_clicks == 0:
+        return dash.no_update, dash.no_update, dash.no_update
+
+    # Filter trails based on user inputs
+    if selected_trails:
+        filtered_trails = df_trails[df_trails['name'].isin(selected_trails)]
+    else:
+        filtered_trails = df_trails
+
+    filtered_trails = filtered_trails[
+        (filtered_trails['distance'] <= distance) &
+        (filtered_trails['max_elevation'] <= elevation) &
+        (filtered_trails['duration'] <= duration) &
+        (filtered_trails['loop'] == loop)
+    ]
+
+    # Display filtered trails under "Search" button 2
+    if filtered_trails.empty:
+        filtered_trails_output = html.P("No trails match the selected criteria.")
+    else:
+        filtered_trails_output = html.Ul([
+            html.Li(trail_name) for trail_name in filtered_trails['name']
+        ])
+
+    # Display filtered trails on the map
     features = []
     centroids = []
     colors = ['blue', 'red', 'green', 'yellow', 'purple']
 
-    for i, trail_name in enumerate(selected_trails):
+    for i, trail_name in enumerate(filtered_trails['name']):
         gpx_path = os.path.join('data/trails', f'{trail_name}.gpx')
         line_string = gpx_to_points(gpx_path)
         centroid = line_string.centroid.coords[0]
-        centroids.append(centroid)  # Append centroid to the list
-        color = colors[i % len(colors)]  # Assign a color based on the index of the trail
+        centroids.append(centroid)
+        color = colors[i % len(colors)]
         feature = dl.Polyline(positions=list(line_string.coords), color=color)
-    
-        # Add Tooltip with trail name
         feature.children = dl.Tooltip(trail_name)
         features.append(feature)
-    
-    # Calculate the center based on the centroids of all selected trails
-    center_latitude = sum([centroid[0] for centroid in centroids]) / len(centroids)
-    center_longitude = sum([centroid[1] for centroid in centroids]) / len(centroids)
-    center = (center_latitude, center_longitude)
-    
-    return features, center
+
+    # Calculate center based on centroids of filtered trails
+    if centroids:
+        center_latitude = sum([centroid[0] for centroid in centroids]) / len(centroids)
+        center_longitude = sum([centroid[1] for centroid in centroids]) / len(centroids)
+        center = (center_latitude, center_longitude)
+    else:
+        # Default center if no trails are found
+        center = (-37.8136, 144.9631)
+
+    return filtered_trails_output, features, center
 
 def load_trail_names():
     df = pd.read_csv('data/50_trails.csv', encoding='utf-8')
@@ -95,7 +132,6 @@ def update_trail_list(search_term):
             return options
     # If no search term provided or no matching trails found, return all trail options
     return [{'label': trail, 'value': trail} for trail in all_trail_names]
-    
 
 # App layout
 app.layout = html.Div([
@@ -210,6 +246,8 @@ html.Div([
         ], style={'text-align': 'center'}) ,
         html.Div(id='filtered-trails')
     ]),
+
+    html.Div(id='filtered-trails'),
 
     dbc.Row(justify="center", className="mb-3", children=[
         dbc.Col([
