@@ -1,4 +1,4 @@
-# hiking.py #test
+# hiking.py
 
 import dash
 from dash import html, dcc
@@ -37,36 +37,22 @@ def gpx_to_points(gpx_path):
 
 @app.callback(
     [Output('trail-layer', 'children'), Output('trail-map', 'center')],
-    [Input('search-button', 'n_clicks'), Input('search-button2', 'n_clicks')],
-    [State('trail-dropdown', 'value'), State('filtered-trails', 'children')],
-    prevent_initial_call=True  # Prevent the callback from being executed during initial load
+    [Input('search-button', 'n_clicks')],
+    [State('trail-dropdown', 'value')]
 )
-def update_map(n_clicks_dropdown, n_clicks_sliders, selected_trails, filtered_trails):
 
-    print("debug selected trail update_map:", selected_trails)
-    print("debug filtered trail update_map:", filtered_trails)
-
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        button_id = None
-    else:
-        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-
-    if button_id == 'search-button' and n_clicks_dropdown > 0:  # Update for selected trails from dropdown
-        trails_to_display = selected_trails
-    elif button_id == 'search-button2' and n_clicks_sliders > 0:  # Update for filtered trails from sliders
-        trails_to_display = filtered_trails
-    else:
+def update_map(n_clicks, selected_trails):
+    if n_clicks == 0:  # Only update when the search button is clicked
         return dash.no_update, dash.no_update
     
-    if not trails_to_display:
+    if not selected_trails:
         return [], dash.no_update
     
     features = []
     centroids = []
     colors = ['blue', 'red', 'green', 'yellow', 'purple']
 
-    for i, trail_name in enumerate(trails_to_display):
+    for i, trail_name in enumerate(selected_trails):
         gpx_path = os.path.join('data/trails', f'{trail_name}.gpx')
         line_string = gpx_to_points(gpx_path)
         centroid = line_string.centroid.coords[0]
@@ -109,36 +95,6 @@ def update_trail_list(search_term):
             return options
     # If no search term provided or no matching trails found, return all trail options
     return [{'label': trail, 'value': trail} for trail in all_trail_names]
-
-@app.callback(
-    Output('filtered-trails', 'children'),
-    [Input('search-button2', 'n_clicks')],
-    [State('distance-slider', 'value'),
-     State('elevation-slider', 'value'),
-     State('duration-slider', 'value'),
-     State('loop-radio', 'value')]
-)
-
-def update_filtered_trails(n_clicks, distance, elevation, duration, loop_type):
-    
-    print("Debug: Search button 2 clicked:", n_clicks)
-
-    if n_clicks == 0:  # Only update when the search button is clicked
-        return []
-    
-    filtered_trails = []
-
-    for index, row in df_trails.iterrows():
-        # Filter trails based on distance, elevation, duration, and loop type
-        if (row['distance'] <= distance and
-            row['elevation_gain'] <= elevation and
-            row['duration'] <= duration and
-            row['loop'] == loop_type):
-            
-            filtered_trails.append(row['name'])
-
-    print("Debug: Filtered trails:", filtered_trails)
-    return filtered_trails
     
 
 # App layout
