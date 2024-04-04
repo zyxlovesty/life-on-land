@@ -26,7 +26,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets, external_sc
     'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js'
 ])
 
-df_trails = pd.read_csv('50_trails.csv')
+df_trails = pd.read_csv('data/50_trails.csv')
 
 def gpx_to_points(gpx_path):
     tree = ET.parse(gpx_path)
@@ -67,7 +67,7 @@ def update_map(n_clicks_dropdown, n_clicks_sliders, selected_trails, filtered_tr
     colors = ['blue', 'red', 'green', 'yellow', 'purple']
 
     for i, trail_name in enumerate(trails_to_display):
-        gpx_path = os.path.join('trails', f'{trail_name}.gpx')
+        gpx_path = os.path.join('data/trails', f'{trail_name}.gpx')
         line_string = gpx_to_points(gpx_path)
         centroid = line_string.centroid.coords[0]
         centroids.append(centroid)  # Append centroid to the list
