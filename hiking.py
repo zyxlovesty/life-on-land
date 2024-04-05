@@ -53,50 +53,47 @@ def update_filtered_trails(n_clicks1, n_clicks2, selected_trails, distance, elev
 
     if button_id == 'search-button':
         n_clicks = n_clicks1
+        trails_to_display = selected_trails
+        print("debug1 trails:", trails_to_display)
     elif button_id == 'search-button2':
         n_clicks = n_clicks2
+        trails_to_display = df_trails[
+            (df_trails['distance'] <= distance) &
+            (df_trails['max_elevation'] <= elevation) &
+            (df_trails['duration'] <= duration) &
+            (df_trails['loop'] == loop)]
+        trails_to_display = trails_to_display['name'].tolist()
+        print("debug2 trails:", trails_to_display)
+
     else:
         n_clicks = 0
 
     if n_clicks == 0:
         return dash.no_update, dash.no_update, dash.no_update
-
-    # Filter trails based on user inputs
-    if selected_trails:
-        filtered_trails = df_trails[df_trails['name'].isin(selected_trails)]
-    else:
-        filtered_trails = df_trails
-
-    filtered_trails = filtered_trails[
-        (filtered_trails['distance'] <= distance) &
-        (filtered_trails['max_elevation'] <= elevation) &
-        (filtered_trails['duration'] <= duration) &
-        (filtered_trails['loop'] == loop)
-    ]
-
+    
     # Display filtered trails under "Search" button 2
-    if filtered_trails.empty:
+    if trails_to_display==[]:
         filtered_trails_output = html.P("No trails match the selected criteria.")
     else:
         filtered_trails_output = html.Ul([
-            html.Li(trail_name) for trail_name in filtered_trails['name']
+            html.Li(trail_name) for trail_name in trails_to_display
         ])
-
+    
     # Display filtered trails on the map
     features = []
     centroids = []
     colors = ['blue', 'red', 'green', 'yellow', 'purple']
-
-    for i, trail_name in enumerate(filtered_trails['name']):
+    
+    for i, trail_name in enumerate(trails_to_display):
         gpx_path = os.path.join('data/trails', f'{trail_name}.gpx')
         line_string = gpx_to_points(gpx_path)
         centroid = line_string.centroid.coords[0]
-        centroids.append(centroid)
+        centroids.append(centroid)  
         color = colors[i % len(colors)]
         feature = dl.Polyline(positions=list(line_string.coords), color=color)
         feature.children = dl.Tooltip(trail_name)
         features.append(feature)
-
+    
     # Calculate center based on centroids of filtered trails
     if centroids:
         center_latitude = sum([centroid[0] for centroid in centroids]) / len(centroids)
@@ -105,7 +102,7 @@ def update_filtered_trails(n_clicks1, n_clicks2, selected_trails, distance, elev
     else:
         # Default center if no trails are found
         center = (-37.8136, 144.9631)
-
+    
     return filtered_trails_output, features, center
 
 def load_trail_names():
