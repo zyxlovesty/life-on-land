@@ -30,24 +30,25 @@ def gpx_to_points(gpx_path):
     route_points = [(float(pt.attrib['lat']), float(pt.attrib['lon'])) for pt in root.findall('.//default:trkpt', namespaces)]
     return LineString(route_points)
 
-def create_trail_card(trail_name, duration, elevation_gain, distance):
+def create_trail_card(trail_number, trail_name, duration, elevation_gain, distance):
     return dbc.Card(
         dbc.CardBody([
             html.H3(style={'display': 'inline'}, children=[
+                html.Span(f"{trail_number}. ", style={'font-weight': 'bold'}),  # Display the trail number
                 html.A(trail_name, href=f'/{trail_name.replace(" ", "-")}', 
                     style={'color': '#112434', 'text-decoration': 'none', 'margin-bottom': '8px'}),
                 html.A(html.I(className="fas fa-external-link-alt", 
-                              style={'color': '#112434', 'text-decoration': 'none', 'margin-bottom': '8px', 'margin-left':'8px', 'font-size': '13px'},
-                              ), href=f'/{trail_name.replace(" ", "-")}')
+                              style={'color': '#112434', 'text-decoration': 'none', 'margin-bottom': '8px', 'margin-left':'8px', 'font-size': '13px'}),
+                      href=f'/{trail_name.replace(" ", "-")}')
             ]),
             html.Div([
                 html.I(className="fas fa-clock", style={'color': '#808080', 'margin-right': '5px'}),
-                html.Span(f"Duration: {duration}hours", style={'color': '#808080'}),  # Light grey color
-                html.I(className="fas fa-mountain", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '10px'}),  # Mountain icon
-                html.Span(f"Elevation Gain: {elevation_gain}m", style={'color': '#808080'}),
-                html.I(className="fas fa-route", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '10px'}),  # Route icon
-                html.Span(f" Distance: {distance}km", style={'color': '#808080'}),
-            ], style={'font-size': '14px', 'margin-bottom': '30px'})  # Smaller font size
+                html.Span(f"Duration: {duration} hours", style={'color': '#808080'}),
+                html.I(className="fas fa-mountain", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '10px'}),
+                html.Span(f"Elevation Gain: {elevation_gain} m", style={'color': '#808080'}),
+                html.I(className="fas fa-route", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '10px'}),
+                html.Span(f"Distance: {distance} km", style={'color': '#808080'}),
+            ], style={'font-size': '14px', 'margin-bottom': '30px'})
         ])
     )
     
@@ -74,6 +75,13 @@ app.layout = html.Div([
     
     html.Section(className='sec', children=[
         html.H2('Trails in Victoria'),
+        html.H4('Explore the diverse trails of Victoria with our carefully curated selection.'),
+        html.P('Our trails span across Victoria and offer a variety of terrains and difficulty levels. We provide average estimates of trail details to help you choose the perfect trail for your adventure.', style={'margin-right':'100px'}),
+        html.P("    "),
+        html.H4('Happy Hiking!', style={'margin-top': '20px'})
+    ]),
+    # html.Div(id='trail-cards-row'),
+    html.Div([
         dcc.Dropdown(
             id='trail-search-dropdown',
             options=load_trail_names(),
@@ -88,20 +96,86 @@ app.layout = html.Div([
                 'border-radius': '30px',
                 'vertical-align':'center'
             }
-        )
-    ]),
-    html.Div(id='trail-cards-row'),
+        ),
+        html.Div(id='trail-cards-row'),  # This is where the trail cards will be displayed
+    ], style={'padding-top': '20px', 'margin-left': '20px'}), 
     html.Div(id='trail-info'),
     dl.Map(
         id='trail-map',
         children=[dl.TileLayer(), dl.LayerGroup(id='trail-layer'), dl.LayerGroup(id='image-layer')],
         style={'width': '70%', 'height': '500px', 'margin-top': '15px', 'margin-left': '200px', 'align': 'center', 'display': 'none'}  # Initially hide the trail-map
-    )
-
+    ),
+    html.Div(id='mountain-backgrounds')
 
 ])
 
+# @app.callback(
+#     Output('sec', 'style'),  # Adjust to output the style of the section directly
+#     [Input('url', 'pathname')]
+# )
+# def update_background_images(pathname):
+#     if pathname == '/' or pathname == '/all-trails':  # Display images only on "All Trails" page
+#         return {
+#             'background-image': 'url(/assets/monutain_01.png), url(/assets/monutain_03.png)',
+#             'background-position': 'top left, bottom right',  # Adjust positions as needed
+#             'background-repeat': 'no-repeat, no-repeat',
+#             'background-attachment': 'fixed, fixed',  # Keep the images fixed during scroll
+#             'background-size': 'cover, cover',  # Cover the respective areas with each image
+#         }
+#     else:
+#         return {}
 
+@app.callback(
+    Output('mountain-backgrounds', 'children'),
+    [Input('url', 'pathname')]
+)
+def update_background_images(pathname):
+    if pathname == '/' or pathname == '/all-trails':
+        return html.Div([
+            html.Img(src=b64_image('assets/monutain_03.png'),
+                style={
+                'position': 'fixed',
+                'bottom': '0',
+                'right': '0',
+                'width': '60%',
+                'height': '60%',
+                'background-size': 'cover',
+                'background-attachment': 'fixed',
+                'z-index': '-1',
+            }),
+            html.Img(src=b64_image('assets/monutain_02.png'),
+                style={
+                'position': 'fixed',
+                'bottom': '0',
+                'right': '0',
+                'width': '60%',
+                'height': '60%',
+                'background-size': 'cover',
+                'background-attachment': 'fixed',
+                'z-index': '-1',
+            }),
+        ])
+    else:
+        return None
+
+@app.callback(
+    Output('trail-search-dropdown', 'style'),
+    [Input('url', 'pathname')]
+)
+def toggle_search_visibility(pathname):
+    if pathname == '/' or pathname == '/all-trails':
+        return {
+                'width':'600px',
+                'padding': '12px',
+                'margin-top': '10px',
+                'margin-right': '16px',
+                'font-size': '16px',
+                'border-radius': '30px',
+                'vertical-align':'center'
+                }
+    else:
+        return {'display': 'none'}
+    
 @app.callback(
     [Output('trail-cards-row', 'children'),
      Output('trail-info', 'children')],
@@ -117,7 +191,7 @@ def update_trail_info(pathname, search_input):
             filtered_trails = df[df['name'].str.contains(search_input, case=False)]
 
         cards = [
-            dbc.Col(create_trail_card(row['name'], row['duration'], row['elevation_gain'], row['distance']), width=4)
+            dbc.Col(create_trail_card(index+1, row['name'], row['duration'], row['elevation_gain'], row['distance']), width=4)
             for index, row in filtered_trails.iterrows()
         ]
         return html.Div(className='trail-cards', style={'padding-top': '20px', 'margin-left': '20px'}, children=[
@@ -138,7 +212,7 @@ def update_trail_info(pathname, search_input):
         return None, html.Div([
             dbc.Row([
                 dcc.Link(html.I(className="fas fa-arrow-left", style={'margin-right': '5px'}), href='/'),
-                dcc.Link('Back to all trails', href='/', className='active')
+                dcc.Link('View all trails', href='/', className='active')
                 ], style={'margin': '0 auto', 'padding': '40px'}),
             dbc.Row(html.H2(trail_name, style={'color': '#112434', 'text-decoration': 'none', 'margin-bottom': '15px',
                                                'margin-left':'40px'})),
@@ -178,8 +252,7 @@ def update_trail_info(pathname, search_input):
                 children=[dl.TileLayer(), dl.LayerGroup(id='trail-layer'), dl.LayerGroup(id='image-layer')],
                 style={'width': '70%', 'height': '500px', 'margin-top': '15px', 'margin-left':'200px', 'align':'center'},
                 center=(-37.8136, 144.9631),
-                zoom=12
-        )
+                zoom=12)
     ])
     ])
         
@@ -189,7 +262,7 @@ def update_trail_info(pathname, search_input):
     prevent_initial_call=True
 )
 def update_map(pathname):
-    if not pathname:
+    if not pathname or pathname == '/':
         return [], dash.no_update
     pathname = pathname[1:]
     splitname = [x.split('-') for x in pathname.split('---')]
@@ -204,24 +277,30 @@ def update_map(pathname):
 @app.callback(
     [Output('image-layer', 'children')],
     [Input('url', 'pathname')],
-    [State('trail-map', 'zoom')]  # Include map zoom as state
+    [State('trail-map', 'zoom')]
 )
 def display_image_marker(pathname, zoom):
+    if zoom is None:
+        zoom = 10
+
     markers = []
-    if not pathname:
+    if not pathname or pathname == '/':
         return [dash.no_update]
     pathname = pathname[1:]
     splitname = [x.split('-') for x in pathname.split('---')]
     trail_name = ' - '.join([' '.join(x) for x in splitname])
     gpx_path = os.path.join('data/trails', f'{trail_name}.gpx')
+    
+    if not os.path.exists(gpx_path):
+        return [dash.no_update]
+
     trail_points = gpx_to_points(gpx_path).coords
-    # Start and finish markers with a custom className for targeting
     start_marker = dl.Marker(
         position=trail_points[0],
         children=[dl.Tooltip("Start")],
         icon={
             "iconUrl": 'assets/start.png',
-            "iconSize": [zoom * 10, zoom * 10],  # Dynamically adjust based on zoom
+            "iconSize": [zoom * 10, zoom * 10],
             "className": "dynamic-icon"
         }
     )
@@ -230,12 +309,13 @@ def display_image_marker(pathname, zoom):
         children=[dl.Tooltip("Finish")],
         icon={
             "iconUrl": 'assets/finish.png',
-            "iconSize": [zoom * 10, zoom * 10],  # Dynamically adjust based on zoom
+            "iconSize": [zoom * 10, zoom * 10],
             "className": "dynamic-icon"
         }
     )
     markers.extend([start_marker, finish_marker])
     return [markers]
+
 
 
 if __name__ == '__main__':
