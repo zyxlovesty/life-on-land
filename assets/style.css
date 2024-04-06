@@ -128,7 +128,7 @@ header
     padding: 12px;
     border: none;
     margin-top: 0px;
-    margin-right: 16px;
+    margin-right: 2px;
     font-size: 17px;
     border-radius: 30px;
     
@@ -190,9 +190,9 @@ header
 }
 
 .slider {
-    width: 30%; /* Set the width of the slider */
+    width: 50%; /* Set the width of the slider */
     margin: 20px auto; /* Center the slider horizontally with top and bottom margin */
-    padding: 10px; /* Add padding around the slider */
+    padding: 2px; /* Add padding around the slider */
     border-radius: 10px; /* Apply rounded corners to the slider */
     background-color: #f0f0f0; /* Set a background color for the slider */
     /* Add more custom styling as needed */
