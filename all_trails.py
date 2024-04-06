@@ -72,14 +72,21 @@ app.layout = html.Div([
             ])
         )
     ]),
-    
-    html.Section(className='sec', children=[
-        html.H2('Trails in Victoria'),
-        html.H4('Explore the diverse trails of Victoria with our carefully curated selection.'),
-        html.P('Our trails span across Victoria and offer a variety of terrains and difficulty levels. We provide average estimates of trail details to help you choose the perfect trail for your adventure.', style={'margin-right':'100px'}),
+    html.Div([
+        html.H2('Trails in Victoria', style={'font-size': '3em', 'color':'#fff', 'margin-bottom': '10px', 'margin-top':'10px', 'margin-left':'40px'}),
+        html.H4('Explore the diverse trails of Victoria with our carefully curated selection.', style={'font-size': '1em', 'color':'#112434', 'margin-left':'40px'}),
+        html.P('Our trails span across Victoria and offer a variety of terrains and difficulty levels. We provide average estimates of trail details to help you choose the perfect trail for your adventure.', style={'margin-right':'150px', 'margin-left':'40px'}),
         html.P("    "),
-        html.H4('Happy Hiking!', style={'margin-top': '20px'})
-    ]),
+        html.H4('Happy Hiking!', style={'margin-top': '20px', 'margin-left':'40px', 'margin-bottom':'10px'})
+    ], style={
+    'background-color': '#112434', 
+    'border': '2px solid white', 
+    'padding': '20px',
+    'margin': '40px',
+    'margin-top':'100px', 
+    'border-radius': '15px', 
+    'color': 'white'
+    }),
     # html.Div(id='trail-cards-row'),
     html.Div([
         dcc.Dropdown(
@@ -109,22 +116,6 @@ app.layout = html.Div([
 
 ])
 
-# @app.callback(
-#     Output('sec', 'style'),  # Adjust to output the style of the section directly
-#     [Input('url', 'pathname')]
-# )
-# def update_background_images(pathname):
-#     if pathname == '/' or pathname == '/all-trails':  # Display images only on "All Trails" page
-#         return {
-#             'background-image': 'url(/assets/monutain_01.png), url(/assets/monutain_03.png)',
-#             'background-position': 'top left, bottom right',  # Adjust positions as needed
-#             'background-repeat': 'no-repeat, no-repeat',
-#             'background-attachment': 'fixed, fixed',  # Keep the images fixed during scroll
-#             'background-size': 'cover, cover',  # Cover the respective areas with each image
-#         }
-#     else:
-#         return {}
-
 @app.callback(
     Output('mountain-backgrounds', 'children'),
     [Input('url', 'pathname')]
@@ -137,8 +128,8 @@ def update_background_images(pathname):
                 'position': 'fixed',
                 'bottom': '0',
                 'right': '0',
-                'width': '60%',
-                'height': '60%',
+                'width': '80%',
+                'height': '100%',
                 'background-size': 'cover',
                 'background-attachment': 'fixed',
                 'z-index': '-1',
@@ -148,8 +139,8 @@ def update_background_images(pathname):
                 'position': 'fixed',
                 'bottom': '0',
                 'right': '0',
-                'width': '60%',
-                'height': '60%',
+                'width': '80%',
+                'height': '100%',
                 'background-size': 'cover',
                 'background-attachment': 'fixed',
                 'z-index': '-1',
@@ -208,6 +199,53 @@ def update_trail_info(pathname, search_input):
         dist_mel = trail['distance_from_mel'].values[0]
         time_mel = trail['drive_from_mel'].values[0]
         loop = trail['loop'].values[0]
+        
+        # return None, html.Section(className='sec', style={'position': 'relative', 'background': '#112434'}, children=[
+        #     dbc.Row([
+        #         dcc.Link(html.I(className="fas fa-arrow-left", style={'margin-right': '5px'}), href='/'),
+        #         dcc.Link('View all trails', href='/', className='active')
+        #         ], style={'margin': '0 auto', 'padding': '40px'}),
+        #     dbc.Row(html.H2(trail_name, style={'color': '#112434', 'text-decoration': 'none', 'margin-bottom': '15px',
+        #                                        'margin-left':'40px'})),
+        #     dbc.Row([
+        #         dbc.Col(html.Img(src=b64_image(f"data/trail_img/{trail_name}.jpg"), 
+        #                          style={'max-width': '100%', 'height': 'auto'}), width=4),
+        #         dbc.Col([
+        #             html.P(description, style={'margin-left': '30px', 'text-align': 'justify'}),
+        #             html.Div([
+        #                 dbc.Row([
+        #                     dbc.Col([
+        #                         html.I(className="fas fa-clock", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '20px', 'margin-left':'30px'}),
+        #                         html.Span(f"Duration: {duration}hours", style={'color': '#808080'}),
+        #                         html.Div(""),
+        #                         html.I(className="fas fa-mountain", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '30px', 'margin-top':'15px'}),  # Mountain icon
+        #                         html.Span(f"Elevation Gain: {elevation_gain}m", style={'color': '#808080'}),
+        #                         html.Div(""),
+        #                         html.I(className="fas fa-route", style={'color': '#ffffffe0', 'margin-right': '5px', 'margin-left': '30px', 'margin-top':'15px'}),  # Route icon
+        #                         html.Span(f" Distance: {distance}km", style={'color': '#ffffffe0'}),
+        #                     ], width=3),
+        #                     dbc.Col([
+        #                         html.I(className="fas fa-solid fa-car", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '20px', 'margin-left':'200px'}),
+        #                         html.Span(f"Drive from Melbourne: {time_mel}hours", style={'color': '#808080'}),
+        #                         html.Div(""),
+        #                         html.I(className="fas fa-map-pin", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '15px', 'margin-left':'200px'}),
+        #                         html.Span(f"Distance from Melbourne: {dist_mel}km", style={'color': '#808080'}),
+        #                         html.Div(""),
+        #                         html.I(className="fas fa-redo", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '15px', 'margin-left':'200px'}),
+        #                         html.Span(f"Trail route: {loop}", style={'color': '#808080'}),
+        #                     ], width=3),
+        #                 ], style={'display': 'flex'}),
+        #         ])], width=4)
+        #     ], style={'margin': '0 30px', 'padding': '40px', 'display': 'flex', 'border': '1px solid', 'border-color': 'rgba(0, 0, 0, 0.2)', 'border-radius': '50px', 'box-shadow': '0 2px 4px rgba(0, 0, 0, 0.1)',}),
+        #     dbc.Row([
+        #     dl.Map(
+        #         id='trail-map',
+        #         children=[dl.TileLayer(), dl.LayerGroup(id='trail-layer'), dl.LayerGroup(id='image-layer')],
+        #         style={'width': '70%', 'height': '500px', 'margin-top': '15px', 'margin-left':'200px', 'align':'center'},
+        #         center=(-37.8136, 144.9631),
+        #         zoom=12)
+        #     ])
+        # ])
     
         return None, html.Div([
             dbc.Row([
@@ -217,7 +255,7 @@ def update_trail_info(pathname, search_input):
             dbc.Row(html.H2(trail_name, style={'color': '#112434', 'text-decoration': 'none', 'margin-bottom': '15px',
                                                'margin-left':'40px'})),
             dbc.Row([
-                dbc.Col(html.Img(src=b64_image(f"assets/{trail_name}.jpg"), 
+                dbc.Col(html.Img(src=b64_image(f"data/trail_img/{trail_name}.jpg"), 
                                  style={'max-width': '100%', 'height': 'auto'}), width=4),
                 dbc.Col([
                     html.P(description, style={'margin-left': '30px', 'text-align': 'justify'}),
@@ -250,11 +288,11 @@ def update_trail_info(pathname, search_input):
             dl.Map(
                 id='trail-map',
                 children=[dl.TileLayer(), dl.LayerGroup(id='trail-layer'), dl.LayerGroup(id='image-layer')],
-                style={'width': '70%', 'height': '500px', 'margin-top': '15px', 'margin-left':'200px', 'align':'center'},
+                style={'width': '70%', 'height': '500px', 'margin-top': '40px', 'margin-left':'200px', 'align':'center'},
                 center=(-37.8136, 144.9631),
                 zoom=12)
-    ])
-    ])
+          ])
+      ])
         
 @app.callback(
     [Output('trail-layer', 'children'), Output('trail-map', 'center')],
