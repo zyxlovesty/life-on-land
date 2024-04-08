@@ -65,9 +65,9 @@ app.layout = html.Div([
             html.Header([
                 html.A('InSync', href='#', className='logo'),
                 html.Ul([
-                    html.Li(dcc.Link('Home', href='/', className='active')),
+                    html.Li(dcc.Link('Home', href='/')),
                     html.Li(dcc.Link('My Trail', href='/my-trail')),
-                    html.Li(dcc.Link('All Trails', href='/all-trails')),
+                    html.Li(dcc.Link('All Trails', href='/all-trails', className='active')),
                 ], className='navigation')
             ])
         )
@@ -199,53 +199,6 @@ def update_trail_info(pathname, search_input):
         dist_mel = trail['distance_from_mel'].values[0]
         time_mel = trail['drive_from_mel'].values[0]
         loop = trail['loop'].values[0]
-        
-        # return None, html.Section(className='sec', style={'position': 'relative', 'background': '#112434'}, children=[
-        #     dbc.Row([
-        #         dcc.Link(html.I(className="fas fa-arrow-left", style={'margin-right': '5px'}), href='/'),
-        #         dcc.Link('View all trails', href='/', className='active')
-        #         ], style={'margin': '0 auto', 'padding': '40px'}),
-        #     dbc.Row(html.H2(trail_name, style={'color': '#112434', 'text-decoration': 'none', 'margin-bottom': '15px',
-        #                                        'margin-left':'40px'})),
-        #     dbc.Row([
-        #         dbc.Col(html.Img(src=b64_image(f"data/trail_img/{trail_name}.jpg"), 
-        #                          style={'max-width': '100%', 'height': 'auto'}), width=4),
-        #         dbc.Col([
-        #             html.P(description, style={'margin-left': '30px', 'text-align': 'justify'}),
-        #             html.Div([
-        #                 dbc.Row([
-        #                     dbc.Col([
-        #                         html.I(className="fas fa-clock", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '20px', 'margin-left':'30px'}),
-        #                         html.Span(f"Duration: {duration}hours", style={'color': '#808080'}),
-        #                         html.Div(""),
-        #                         html.I(className="fas fa-mountain", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '30px', 'margin-top':'15px'}),  # Mountain icon
-        #                         html.Span(f"Elevation Gain: {elevation_gain}m", style={'color': '#808080'}),
-        #                         html.Div(""),
-        #                         html.I(className="fas fa-route", style={'color': '#ffffffe0', 'margin-right': '5px', 'margin-left': '30px', 'margin-top':'15px'}),  # Route icon
-        #                         html.Span(f" Distance: {distance}km", style={'color': '#ffffffe0'}),
-        #                     ], width=3),
-        #                     dbc.Col([
-        #                         html.I(className="fas fa-solid fa-car", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '20px', 'margin-left':'200px'}),
-        #                         html.Span(f"Drive from Melbourne: {time_mel}hours", style={'color': '#808080'}),
-        #                         html.Div(""),
-        #                         html.I(className="fas fa-map-pin", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '15px', 'margin-left':'200px'}),
-        #                         html.Span(f"Distance from Melbourne: {dist_mel}km", style={'color': '#808080'}),
-        #                         html.Div(""),
-        #                         html.I(className="fas fa-redo", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '15px', 'margin-left':'200px'}),
-        #                         html.Span(f"Trail route: {loop}", style={'color': '#808080'}),
-        #                     ], width=3),
-        #                 ], style={'display': 'flex'}),
-        #         ])], width=4)
-        #     ], style={'margin': '0 30px', 'padding': '40px', 'display': 'flex', 'border': '1px solid', 'border-color': 'rgba(0, 0, 0, 0.2)', 'border-radius': '50px', 'box-shadow': '0 2px 4px rgba(0, 0, 0, 0.1)',}),
-        #     dbc.Row([
-        #     dl.Map(
-        #         id='trail-map',
-        #         children=[dl.TileLayer(), dl.LayerGroup(id='trail-layer'), dl.LayerGroup(id='image-layer')],
-        #         style={'width': '70%', 'height': '500px', 'margin-top': '15px', 'margin-left':'200px', 'align':'center'},
-        #         center=(-37.8136, 144.9631),
-        #         zoom=12)
-        #     ])
-        # ])
     
         return None, html.Div([
             dbc.Row([
@@ -256,7 +209,7 @@ def update_trail_info(pathname, search_input):
                                                'margin-left':'40px'})),
             dbc.Row([
                 dbc.Col(html.Img(src=b64_image(f"data/trail_img/{trail_name}.jpg"), 
-                                 style={'max-width': '100%', 'height': 'auto'}), width=4),
+                                 style={'max-width': '100%', 'height': 'auto', 'max-height': '1000px', 'display': 'block'}), width=4),
                 dbc.Col([
                     html.P(description, style={'margin-left': '30px', 'text-align': 'justify'}),
                     html.Div([
