@@ -1,11 +1,10 @@
 # home.py
 
 import dash
-from dash import html, dcc
+from dash import html, dcc, callback, clientside_callback
 import dash_leaflet as dl
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ClientsideFunction
-
 import pandas as pd
 import os
 import base64
@@ -14,17 +13,7 @@ from shapely.geometry import LineString
 
 from database import *
 
-# External CSS
-external_stylesheets = [
-    'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap',
-    '/assets/style.css',
-    dbc.themes.MINTY
-]
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets, external_scripts=[
-    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js'],
-    suppress_callback_exceptions=True)
+dash.register_page(__name__, path="/")
 
 session, connection = get_session()
 
@@ -39,29 +28,18 @@ def gpx_to_points(gpx_path):
     route_points = [(float(pt.attrib['lat']), float(pt.attrib['lon'])) for pt in root.findall('.//default:trkpt', namespaces)]
     return LineString(route_points)
 
-app.layout = html.Div([
-        dbc.Row([
-        dbc.Col(
-            html.Header([
-                html.A('InSync', href='#', className='logo'),
-                html.Ul([
-                    html.Li(dcc.Link('Home', href='/home', className='active')),
-                    html.Li(dcc.Link('My Trail', id='my-trail-link', href='/my-trail')),
-                    html.Li(dcc.Link('All Trails', href='/all-trails')),
-                ], className='navigation')
-            ])
-        )
-    ]),
-    dcc.Location(id='url', refresh=False),  # Add this line
+layout = html.Div([
+
+    dcc.Location(id='url', refresh=False),
     
     html.Section(className='parallax', children=[
         html.H2('Start Your Hiking Journey', id='text'),
-        html.Img(src='/assets/monutain_01.png', id='m1'),
-        html.Img(src='/assets/trees_02.png', id='t2'),
-        html.Img(src='/assets/monutain_02.png', id='m2'),
-        html.Img(src='/assets/trees_01.png', id='t1'),
-        html.Img(src='/assets/man.png', id='man'),
-        html.Img(src='/assets/plants.png', id='plants')
+        html.Img(src='../assets/monutain_01.png', id='m1'),
+        html.Img(src='../assets/trees_02.png', id='t2'),
+        html.Img(src='../assets/monutain_02.png', id='m2'),
+        html.Img(src='../assets/trees_01.png', id='t1'),
+        html.Img(src='../assets/man.png', id='man'),
+        html.Img(src='../assets/plants.png', id='plants')
     ]),
     html.Div(id='dummy-input', style={'display': 'none'}),
     html.Div(id='dummy-output', style={'display': 'none'}),
@@ -194,21 +172,21 @@ app.layout = html.Div([
                     style={'width': '100%', 'height': '500px'},
                     center=(-37.8136, 144.9631),
                     zoom=12
-                ),
-                dcc.Location(id='url', refresh=False)
+                )
             ], width=6),
         ], style={'margin': '0 auto', 'width': '100%'}),
     ]),
 ])
 
-@app.callback(
-    [Output('filtered-trails', 'children'), Output('home-trail-layer', 'children'), Output('home-trail-map', 'center')],
+@callback(
+    [Output('filtered-trails', 'children', allow_duplicate=True), Output('home-trail-layer', 'children', allow_duplicate=True), Output('home-trail-map', 'center', allow_duplicate=True)],
     [Input('home-search-button', 'n_clicks'), Input('home-search-button2', 'n_clicks')],
     [State('home-trail-dropdown', 'value'),
      State('distance-slider', 'value'),
      State('elevation-slider', 'value'),
      State('duration-slider', 'value'),
-     State('loop-radio', 'value')]
+     State('loop-radio', 'value')],
+     prevent_initial_call=True 
 )
 def update_filtered_trails(n_clicks1, n_clicks2, selected_trails, distance, elevation, duration, loop):
     ctx = dash.callback_context
@@ -275,9 +253,9 @@ def update_filtered_trails(n_clicks1, n_clicks2, selected_trails, distance, elev
     
     return filtered_trails_output, features, center
 
-@app.callback(
-    Output('home-trail-dropdown', 'options'),
-    [Input('home-trail-dropdown', 'search_value')]
+@callback(
+    Output('home-trail-dropdown', 'options', allow_duplicate=True),
+    [Input('home-trail-dropdown', 'search_value')], prevent_initial_call=True
 )
 def update_trail_list(search_term):
     if search_term:
@@ -296,12 +274,10 @@ def update_trail_list(search_term):
 # app.layout = app.layout + gdc.Import(src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js") + gdc.Import(src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js")
 
 
-app.clientside_callback(
+clientside_callback(
     ClientsideFunction(namespace='clientside', function_name='trigger_gsap_animation'),
-    Output('dummy-output', 'children'),
-    [Input('dummy-input', 'children')]
+    Output('dummy-output', 'children', allow_duplicate=True),
+    [Input('dummy-input', 'children')],
+    prevent_initial_call=True
+    
 )
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)

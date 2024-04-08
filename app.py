@@ -1,32 +1,47 @@
 # app.py
 
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+import dash_bootstrap_components as dbc
+from dash import html
 from dash.dependencies import Input, Output
-from main_layout import layout as main_layout
-from home import layout as home_layout
-from my_trails import layout as my_trails_layout
+from dash import callback
 
-app = dash.Dash(__name__)
+# External CSS
+external_stylesheets = [
+    'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap',
+    '/assets/style.css',
+    dbc.themes.MINTY
+]
+
+app = dash.Dash(__name__, use_pages=True, external_stylesheets=external_stylesheets, external_scripts=[
+    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js'],
+    suppress_callback_exceptions=True, prevent_initial_callbacks="initial_duplicate")
+
+from pages import home
+from pages import my_trails
+
 server = app.server
 
+
 app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    dbc.Row([
+        dbc.Col(
+            html.Header([
+                html.A('InSync', href='#', className='logo'),
+                html.Ul([
+                    html.Li(dcc.Link('Home', href='/home', className='active')),
+                    html.Li(dcc.Link('My Trail', href='/my-trails')),
+                    html.Li(dcc.Link('All Trails', href='/all-trails')),
+                ], className='navigation'),
+                html.Hr(),
+                dash.page_container
+            ])
+        )
+    ])
 ])
 
-@app.callback(
-    Output('page-content', 'children'),
-    [Input('url', 'pathname')]
-)
-def display_page(pathname):
-    if pathname in ['/', '/home']:
-        return home_layout
-    elif pathname == '/my-trail':
-        return my_trails_layout
-    else:
-        return '404 Page Not Found'
 
 if __name__ == '__main__':
     app.run_server(debug=True)
