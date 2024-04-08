@@ -295,8 +295,9 @@ app.layout = html.Div([
         html.H2('Trail in Vic'),
         html.P('Start your journey'),
         html.Br(), 
-        dbc.Row([
-            dbc.Col([
+
+        html.Div([
+            html.Div([
                 html.H2('Trail Search'),
 
                 dcc.Dropdown(
@@ -387,9 +388,9 @@ app.layout = html.Div([
                 html.Br(),
                 html.Br()
 
-            ], width=6),
+            ], id='search-functionality',style={'width': '50%', 'float': 'left', 'background-color': "#000058"}),
 
-            dbc.Col([
+            html.Div([
                 dl.Map(
                     id='trail-map',
                     children=[dl.TileLayer(), dl.LayerGroup(id='trail-layer')],
@@ -398,11 +399,10 @@ app.layout = html.Div([
                     zoom=12
                 ),
                 dcc.Location(id='url', refresh=False)
-            ], width=4),
-        ], style={'margin': '0 auto', 'width': '100%'}),
+            ], id='map-functionality', style={'width': '50%', 'float': 'right','background-color': 'blue'}),
+        ], style={'margin': '0', 'padding': '0', 'width': '100%', 'background-color': 'blue'}),
     ]),
 ])
-
 # app.layout = app.layout + gdc.Import(src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js") + gdc.Import(src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js")
 
 
