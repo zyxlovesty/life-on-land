@@ -313,7 +313,7 @@ def handle_upload(contents, local_date, position, position_error):
 )
 def display_image_marker(contents, trail, zoom):
     markers = []
-    if not trail:
+    if not trail or df_uploads.empty:
         return [dash.no_update]
     gpx_path = os.path.join('data/trails', f'{trail}.gpx')
     trail_points = gpx_to_points(gpx_path).coords
@@ -369,10 +369,3 @@ def update_map(trail_name):
     features = [dl.Polyline(positions=positions, color='blue')]
     return features, centroid
 
-#@callback(
-#    Output('url', 'pathname'),
-#    [Input('my-trail-link', 'n_clicks')],
-#)
-#def update_url(n_clicks):
-#    if n_clicks:
-#        return '/my-trail'

@@ -21,6 +21,7 @@ app = dash.Dash(__name__, use_pages=True, external_stylesheets=external_styleshe
 
 from pages import home
 from pages import my_trails
+from pages import all_trails
 
 server = app.server
 

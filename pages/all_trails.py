@@ -12,7 +12,7 @@ import os
 
 from database import *
 
-#dash.register_page(__name__)
+dash.register_page(__name__)
 
 session, connection = get_session()
 
@@ -57,19 +57,6 @@ def b64_image(img):
     return 'data:image/png;base64,' + base64.b64encode(image).decode('utf-8')
 
 layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    dbc.Row([
-        dbc.Col(
-            html.Header([
-                html.A('InSync', href='#', className='logo'),
-                html.Ul([
-                    html.Li(dcc.Link('Home', href='/')),
-                    html.Li(dcc.Link('My Trail', href='/my-trail')),
-                    html.Li(dcc.Link('All Trails', href='/all-trails', className='active')),
-                ], className='navigation')
-            ])
-        )
-    ]),
     html.Div([
         html.H2('Trails in Victoria', style={'font-size': '3em', 'color':'#fff', 'margin-bottom': '10px', 'margin-top':'10px', 'margin-left':'40px'}),
         html.H4('Explore the diverse trails of Victoria with our carefully curated selection.', style={'font-size': '1em', 'color':'#112434', 'margin-left':'40px'}),
@@ -209,11 +196,14 @@ def update_trail_info(pathname, search_input):
             dbc.Col(create_trail_card(index+1, row['trail_name'], row['trail_duration'], row['trail_ele_gain'], row['trail_distance']), width=4)
             for index, row in filtered_trails.iterrows()
         ]
-        return html.Div(className='trail-cards', style={'padding-top': '20px', 'margin-left': '20px'}, children=[
-            dbc.Row(id='trail-cards-row', children=cards)
-        ]), None
+        if cards:
+            return html.Div(className='trail-cards', style={'padding-top': '20px', 'margin-left': '20px'}, children=[
+                dbc.Row(id='trail-cards-row', children=cards)
+            ]), None
+        else:
+            return [], None  # Return an empty list if there are no cards to display
     else:
-        [html.Div("No trails to display")], None
+        return [html.Div("No trails to display")], None
     '''else:
         splitname = [x.split('-') for x in url.split('---')]
         trail_name = ' - '.join([' '.join(x) for x in splitname])
