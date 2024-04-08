@@ -31,17 +31,30 @@ app.layout = html.Div([
             html.Header([
                 html.A('InSync', href='#', className='logo'),
                 html.Ul([
-                    html.Li(dcc.Link('Home', href='/home', className='active')),
-                    html.Li(dcc.Link('My Trail', href='/my-trails')),
-                    html.Li(dcc.Link('All Trails', href='/all-trails')),
+                    html.Li(dcc.Link('Home', href='/home', id='home-link', className='navigation-link')),
+                    html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
+                    html.Li(dcc.Link('All Trails', href='/all-trails', id='all-trails-link', className='navigation-link')),
                 ], className='navigation'),
-                html.Hr(),
-                dash.page_container
+
             ])
         )
-    ])
+    ]),
+    html.Hr(),
+    dash.page_container
 ])
 
+# Callback to update the active link based on the current pathname
+@app.callback(
+    [Output('home-link', 'className'),
+     Output('my-trails-link', 'className'),
+     Output('all-trails-link', 'className')],
+    [Input('url', 'pathname')]
+)
+def update_active_link(pathname):
+    home_class = 'active' if pathname == '/home' else ''
+    my_trails_class = 'active' if pathname == '/my-trails' else ''
+    all_trails_class = 'active' if pathname == '/all-trails' else ''
+    return home_class, my_trails_class, all_trails_class
 
 if __name__ == '__main__':
     app.run_server(debug=True)

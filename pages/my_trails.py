@@ -83,18 +83,7 @@ def db_img(blob):
     return 'data:image/png;base64,' + base64.b64encode(blob).decode('utf-8')
 
 layout = dbc.Container(fluid=True, children=[
-    dbc.Row([
-        dbc.Col(
-            html.Header([
-                html.A('InSync', href='#', className='logo'),
-                html.Ul([
-                    html.Li(dcc.Link('Home', href='/', className='active')),
-                    html.Li(dcc.Link('My Trail', href='/my-trail')),
-                    html.Li(dcc.Link('All Trails', href='/all-trails')),
-                ], className='navigation')
-            ])
-        )
-    ]),
+
     html.Div(id='location-div', style={'display': 'none'}),
     html.Section(className='parallax', children=[
         html.H2('Start your Trail', id='text2'),
