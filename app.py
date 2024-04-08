@@ -27,6 +27,7 @@ server = app.server
 
 
 app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),  # Add dcc.Location component
     dbc.Row([
         dbc.Col(
             html.Header([
@@ -52,7 +53,7 @@ app.layout = html.Div([
     [Input('url', 'pathname')]
 )
 def update_active_link(pathname):
-    home_class = 'active' if pathname == '/home' else ''
+    home_class = 'active' if pathname == '/' else ''
     my_trails_class = 'active' if pathname == '/my-trails' else ''
     all_trails_class = 'active' if pathname == '/all-trails' else ''
     return home_class, my_trails_class, all_trails_class
