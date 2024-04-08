@@ -31,7 +31,7 @@ app.layout = html.Div([
             html.Header([
                 html.A('InSync', href='#', className='logo'),
                 html.Ul([
-                    html.Li(dcc.Link('Home', href='/home', id='home-link', className='navigation-link')),
+                    html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
                     html.Li(dcc.Link('All Trails', href='/all-trails', id='all-trails-link', className='navigation-link')),
                 ], className='navigation'),

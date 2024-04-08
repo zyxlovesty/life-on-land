@@ -369,10 +369,10 @@ def update_map(trail_name):
     features = [dl.Polyline(positions=positions, color='blue')]
     return features, centroid
 
-@callback(
-    Output('url', 'pathname'),
-    [Input('my-trail-link', 'n_clicks')],
-)
-def update_url(n_clicks):
-    if n_clicks:
-        return '/my-trail'
+#@callback(
+#    Output('url', 'pathname'),
+#    [Input('my-trail-link', 'n_clicks')],
+#)
+#def update_url(n_clicks):
+#    if n_clicks:
+#        return '/my-trail'
