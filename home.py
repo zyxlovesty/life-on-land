@@ -21,9 +21,8 @@ external_stylesheets = [
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, external_scripts=[
     'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js'
-    
-])
+    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js'],
+    suppress_callback_exceptions=True)
 
 session, connection = get_session()
 
@@ -38,7 +37,7 @@ def gpx_to_points(gpx_path):
     route_points = [(float(pt.attrib['lat']), float(pt.attrib['lon'])) for pt in root.findall('.//default:trkpt', namespaces)]
     return LineString(route_points)
 
-home_layout = html.Div([
+app.layout = html.Div([
         dbc.Row([
         dbc.Col(
             html.Header([
