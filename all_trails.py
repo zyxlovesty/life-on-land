@@ -10,6 +10,8 @@ import pandas as pd
 import base64
 import os
 
+from database import *
+
 external_stylesheets = [
     'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
@@ -18,10 +20,12 @@ external_stylesheets = [
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 
-df = pd.read_csv('data/50_trails.csv', encoding='utf-8')
+session, connection = get_session()
+
+df = pd.read_sql('SELECT * FROM trails', con=connection)
 
 def load_trail_names():
-    return [{'label': name, 'value': name} for name in df['name'].unique()]
+    return [{'label': name, 'value': name} for name in df['trail_name'].unique()]
 
 def gpx_to_points(gpx_path):
     tree = ET.parse(gpx_path)
@@ -191,14 +195,14 @@ def update_trail_info(pathname, search_input):
     else:
         splitname = [x.split('-') for x in url.split('---')]
         trail_name = ' - '.join([' '.join(x) for x in splitname])
-        trail = df[df['name'] == trail_name]
-        description = trail['description'].values[0]
-        duration = trail['duration'].values[0]
-        elevation_gain = trail['elevation_gain'].values[0]
-        distance = trail['distance'].values[0]
-        dist_mel = trail['distance_from_mel'].values[0]
-        time_mel = trail['drive_from_mel'].values[0]
-        loop = trail['loop'].values[0]
+        trail = df[df['trail_name'] == trail_name]
+        description = trail['trail_desc'].values[0]
+        duration = trail['trail_duration'].values[0]
+        elevation_gain = trail['trail_ele_gain'].values[0]
+        distance = trail['trail_distance'].values[0]
+        dist_mel = trail['trail_dist_mel'].values[0]
+        time_mel = trail['trail_time_mel'].values[0]
+        loop = trail['trail_loop'].values[0]
     
         return None, html.Div([
             dbc.Row([
