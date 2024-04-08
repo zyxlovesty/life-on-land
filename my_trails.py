@@ -1,3 +1,5 @@
+# my_trails.py
+
 import dash
 from dash import dcc, html, Input, Output, State, ClientsideFunction
 import dash_leaflet as dl
@@ -386,6 +388,14 @@ def update_map(trail_name):
     positions = list(line_string.coords)
     features = [dl.Polyline(positions=positions, color='blue')]
     return features, centroid
+
+@app.callback(
+    Output('url', 'pathname'),
+    [Input('my-trail-link', 'n_clicks')],
+)
+def update_url(n_clicks):
+    if n_clicks:
+        return '/my-trail'
 
 if __name__ == '__main__':
     app.run_server(debug=True)

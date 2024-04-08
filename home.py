@@ -1,3 +1,5 @@
+# home.py
+
 import dash
 from dash import html, dcc
 import dash_leaflet as dl
@@ -44,12 +46,13 @@ app.layout = html.Div([
                 html.A('InSync', href='#', className='logo'),
                 html.Ul([
                     html.Li(dcc.Link('Home', href='/home', className='active')),
-                    html.Li(dcc.Link('My Trail', href='/my-trail')),
+                    html.Li(dcc.Link('My Trail', id='my-trail-link', href='/my-trail')),
                     html.Li(dcc.Link('All Trails', href='/all-trails')),
                 ], className='navigation')
             ])
         )
     ]),
+    dcc.Location(id='url', refresh=False),  # Add this line
     
     html.Section(className='parallax', children=[
         html.H2('Start Your Hiking Journey', id='text'),
@@ -298,6 +301,7 @@ app.clientside_callback(
     Output('dummy-output', 'children'),
     [Input('dummy-input', 'children')]
 )
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
