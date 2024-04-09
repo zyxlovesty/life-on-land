@@ -1,25 +1,23 @@
+#all_trails.py
+
 import dash
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import html, dcc, callback
 from dash.dependencies import Input, Output, State
 import dash_leaflet as dl
-from dash import callback
+
 import xml.etree.ElementTree as ET
 from shapely.geometry import LineString
 import pandas as pd
 import base64
 import os
 
-from database import *
-
 dash.register_page(__name__)
 
-session, connection = get_session()
-
-df = pd.read_sql('SELECT * FROM trails', con=connection)
+df = pd.read_csv('data/50_trails.csv', encoding='utf-8')
 
 def load_trail_names():
-    return [{'label': name, 'value': name} for name in df['trail_name'].unique()]
+    return [{'label': name, 'value': name} for name in df['name'].unique()]
 
 def gpx_to_points(gpx_path):
     tree = ET.parse(gpx_path)
@@ -75,7 +73,7 @@ layout = html.Div([
     # html.Div(id='trail-cards-row'),
     html.Div([
         dcc.Dropdown(
-            id='alltrail-search-dropdown',
+            id='trail-search-dropdown',
             options=load_trail_names(),
             searchable=True,
             placeholder='Search for trails...',
@@ -92,47 +90,23 @@ layout = html.Div([
         html.Div(id='trail-cards-row'),  # This is where the trail cards will be displayed
     ], style={'padding-top': '20px', 'margin-left': '20px'}), 
     html.Div(id='trail-info'),
-    # dl.Map(
-    #     id='alltrail-map',
-    #     children=[dl.TileLayer(), dl.LayerGroup(id='alltrail-layer'), dl.LayerGroup(id='allimage-layer')],
-    #     style={'width': '70%', 'height': '500px', 'margin-top': '15px', 'margin-left': '200px', 'align': 'center', 'display': 'none'}  # Initially hide the trail-map
-    # ),
-    html.Div([
-            html.Img(src=b64_image('assets/monutain_02.png'),
-                style={
-                'position': 'fixed',
-                'bottom': '0',
-                'right': '0',
-                'width': '80%',
-                'height': '100%',
-                'background-size': 'cover',
-                'background-attachment': 'fixed',
-                'z-index': '-1',
-            }),
-            html.Img(src=b64_image('assets/monutain_02.png'),
-                style={
-                'position': 'fixed',
-                'bottom': '0',
-                'right': '0',
-                'width': '80%',
-                'height': '100%',
-                'background-size': 'cover',
-                'background-attachment': 'fixed',
-                'z-index': '-1',
-            }),
-        ])
+    dl.Map(
+        id='trail-map',
+        children=[dl.TileLayer(), dl.LayerGroup(id='trail-layer'), dl.LayerGroup(id='image-layer')],
+        style={'width': '70%', 'height': '500px', 'margin-top': '15px', 'margin-left': '200px', 'align': 'center', 'display': 'none'}  # Initially hide the trail-map
+    ),
+    html.Div(id='mountain-backgrounds')
 
 ])
 
-'''
-@app.callback(
+@callback(
     Output('mountain-backgrounds', 'children'),
     [Input('url', 'pathname')]
 )
 def update_background_images(pathname):
-    if pathname == '/all-trails':
+    if pathname == '/' or pathname == '/all-trails':
         return html.Div([
-            html.Img(src=b64_image('assets/monutain_02.png'),
+            html.Img(src=b64_image('assets/monutain_03.png'),
                 style={
                 'position': 'fixed',
                 'bottom': '0',
@@ -158,13 +132,12 @@ def update_background_images(pathname):
     else:
         return None
 
-
-@app.callback(
-    Output('alltrail-search-dropdown', 'style'),
+@callback(
+    Output('trail-search-dropdown', 'style'),
     [Input('url', 'pathname')]
 )
 def toggle_search_visibility(pathname):
-    if pathname == '/all-trails':
+    if pathname == '/' or pathname == '/all-trails':
         return {
                 'width':'600px',
                 'padding': '12px',
@@ -176,17 +149,16 @@ def toggle_search_visibility(pathname):
                 }
     else:
         return {'display': 'none'}
-'''
     
 @callback(
     [Output('trail-cards-row', 'children'),
      Output('trail-info', 'children')],
     [Input('url', 'pathname'),
-     Input('alltrail-search-dropdown', 'value')]
+     Input('trail-search-dropdown', 'value')]
 )
 def update_trail_info(pathname, search_input):
     url = pathname[1:]
-    if url == 'all_trails':
+    if len(url) == 0:
         if search_input is None or search_input == '':
             filtered_trails = df
         else:
@@ -196,25 +168,20 @@ def update_trail_info(pathname, search_input):
             dbc.Col(create_trail_card(index+1, row['trail_name'], row['trail_duration'], row['trail_ele_gain'], row['trail_distance']), width=4)
             for index, row in filtered_trails.iterrows()
         ]
-        if cards:
-            return html.Div(className='trail-cards', style={'padding-top': '20px', 'margin-left': '20px'}, children=[
-                dbc.Row(id='trail-cards-row', children=cards)
-            ]), None
-        else:
-            return [], None  # Return an empty list if there are no cards to display
+        return html.Div(className='trail-cards', style={'padding-top': '20px', 'margin-left': '20px'}, children=[
+            dbc.Row(id='trail-cards-row', children=cards)
+        ]), None
     else:
-        return [html.Div("No trails to display")], None
-    '''else:
         splitname = [x.split('-') for x in url.split('---')]
         trail_name = ' - '.join([' '.join(x) for x in splitname])
-        trail = df[df['name'] == trail_name]
-        description = trail['description'].values[0]
-        duration = trail['duration'].values[0]
-        elevation_gain = trail['elevation_gain'].values[0]
-        distance = trail['distance'].values[0]
-        dist_mel = trail['distance_from_mel'].values[0]
-        time_mel = trail['drive_from_mel'].values[0]
-        loop = trail['loop'].values[0]
+        trail = df[df['trail_name'] == trail_name]
+        description = trail['trail_desc'].values[0]
+        duration = trail['trail_duration'].values[0]
+        elevation_gain = trail['trail_ele_gain'].values[0]
+        distance = trail['trail_distance'].values[0]
+        dist_mel = trail['trail_dist_mel'].values[0]
+        time_mel = trail['trail_time_mel'].values[0]
+        loop = trail['trail_loop'].values[0]
     
         return None, html.Div([
             dbc.Row([
@@ -263,14 +230,14 @@ def update_trail_info(pathname, search_input):
           ])
       ])
         
-@app.callback(
-    [Output('alltrail-layer', 'children'), Output('alltrail-map', 'center')],
+@callback(
+    [Output('trail-layer', 'children'), Output('trail-map', 'center')],
     [Input('url', 'pathname')],
     prevent_initial_call=True
 )
 def update_map(pathname):
     if not pathname or pathname == '/':
-        return [], dash.no_update
+        return [], (-37.8136, 144.9631)  # Fallback to Melbourne coordinates
     pathname = pathname[1:]
     splitname = [x.split('-') for x in pathname.split('---')]
     trail_name = ' - '.join([' '.join(x) for x in splitname])
@@ -281,10 +248,10 @@ def update_map(pathname):
     features = [dl.Polyline(positions=positions, color='blue')]
     return features, centroid
 
-@app.callback(
-    [Output('allimage-layer', 'children')],
+@callback(
+    [Output('image-layer', 'children')],
     [Input('url', 'pathname')],
-    [State('alltrail-map', 'zoom')]
+    [State('trail-map', 'zoom')]
 )
 def display_image_marker(pathname, zoom):
     if zoom is None:
@@ -322,4 +289,3 @@ def display_image_marker(pathname, zoom):
     )
     markers.extend([start_marker, finish_marker])
     return [markers]
-'''

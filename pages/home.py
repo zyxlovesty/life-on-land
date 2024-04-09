@@ -13,7 +13,7 @@ from shapely.geometry import LineString
 
 from database import *
 
-dash.register_page(__name__, path="/")
+dash.register_page(__name__,path="/")
 
 session, connection = get_session()
 

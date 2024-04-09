@@ -11,6 +11,7 @@ from dash import callback
 external_stylesheets = [
     'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap',
     '/assets/style.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
     dbc.themes.MINTY
 ]
 
@@ -24,7 +25,6 @@ from pages import my_trails
 from pages import all_trails
 
 server = app.server
-
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),  # Add dcc.Location component
