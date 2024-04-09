@@ -18,6 +18,7 @@ dash.register_page(__name__,path="/")
 session, connection = get_session()
 
 df_trails = pd.read_sql('SELECT * FROM trails', con=connection)
+#print("debug: df_trails", df_trails['trail_name'].tolist())
 
 all_trail_names = df_trails['trail_name'].tolist()
 

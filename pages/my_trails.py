@@ -35,6 +35,9 @@ session, connection = get_session()
 df_uploads = pd.read_sql('SELECT * FROM uploads', con=connection)
 df_trails = pd.read_sql('SELECT * FROM trails', con=connection)
 
+#print("debug df_uploads", df_uploads)
+#print("debug df_trails", df_trails)
+
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'C:/Users/ojasv/OneDrive/Monash/Sem 4/FIT5120/life-on-land/iteration1/lifeonland-418914-00a1094d16b6.json'
 
 def detect_labels(path):
