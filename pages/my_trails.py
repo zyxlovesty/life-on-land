@@ -313,10 +313,16 @@ def handle_upload(contents, local_date, position, position_error):
 )
 def display_image_marker(contents, trail, zoom):
     markers = []
-    if not trail or df_uploads.empty:
+    if not trail:
         return [dash.no_update]
+
+    # Check if df_uploads is empty
+    if df_uploads.empty:
+        return [markers]    
+
     gpx_path = os.path.join('data/trails', f'{trail}.gpx')
     trail_points = gpx_to_points(gpx_path).coords
+    
     # Start and finish markers with a custom className for targeting
     start_marker = dl.Marker(
         position=trail_points[0],
@@ -337,22 +343,22 @@ def display_image_marker(contents, trail, zoom):
         }
     )
     markers.extend([start_marker, finish_marker])
-    # Image markers
-    if not df_uploads.empty:
-        filtered_df = df_uploads[df_uploads.apply(lambda row: is_within_distance((row['upload_lat'], row['upload_long']), trail_points), axis=1)]
-        for _, row in filtered_df.iterrows():
-            image_url = db_img(row['upload_img'])
-            image_element = html.Img(src=image_url, style={'width': '100px', 'height': 'auto'})
-            image_marker = dl.Marker(
-                position=[row['upload_lat'], row['upload_long']],
-                children=[dl.Tooltip(children=[image_element])],
-                icon={
-                    "iconUrl": 'assets/species.png',
-                    "iconSize": [zoom * 5, zoom * 7],  
-                    # "className": "dynamic-icon"  # Use this class to adjust the icon size via JS if needed
-                }
-            )
-            markers.append(image_marker)
+
+    filtered_df = df_uploads[df_uploads.apply(lambda row: is_within_distance((row['upload_lat'], row['upload_long']), trail_points), axis=1)]
+    for _, row in filtered_df.iterrows():
+        image_url = db_img(row['upload_img'])
+        image_element = html.Img(src=image_url, style={'width': '100px', 'height': 'auto'})
+        image_marker = dl.Marker(
+            position=[row['upload_lat'], row['upload_long']],
+            children=[dl.Tooltip(children=[image_element])],
+            icon={
+                "iconUrl": 'assets/species.png',
+                "iconSize": [zoom * 5, zoom * 7],  
+                # "className": "dynamic-icon"  # Use this class to adjust the icon size via JS if needed
+            }
+        )
+        markers.append(image_marker)
+
     return [markers]
 
 @callback(
