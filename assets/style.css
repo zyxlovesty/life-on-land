@@ -94,6 +94,15 @@ header
     font-size:4.1em;
     color:#112434;
 }
+#text2
+{
+    position: absolute;
+    top: 30%;
+    right:500px;
+    
+    font-size:4.1em;
+    color:#063f6e;
+}
 .sec
 {
     position: relative;
@@ -106,14 +115,6 @@ header
     color:#fff;
     margin-bottom: 10px;
 }
-
-.sec h4
-{
-    font-size: 1em;
-    color:#fff;
-    margin-bottom: 10px;
-}
-
 .sec p
 {
     font-size: 1em;
@@ -128,72 +129,22 @@ header
     padding: 12px;
     border: none;
     margin-top: 0px;
-    margin-right: 2px;
+    margin-right: 16px;
     font-size: 17px;
     border-radius: 30px;
     
   }
-  .search-button {
-    margin-top: 50px;
-    width: 100px;
+/* assets/style.css */
+.upload-disabled:hover:before {
+    content: "Please share your location";
+    position: absolute;
+    width: 100%;
     height: 50px;
-    background-color: blue;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    font-size: 15px;
+    background-color: #f8d7da; /* Light red background */
+    color: #842029; /* Dark red text */
+    border-radius: 20px;
+    line-height: 50px;
+    text-align: center;
 }
 
-.search-button:hover {
-    background-color: darkblue; /* Change background color on hover */
-}
 
-/* style.css */
-
-/* Example styling for the slider track */
-.rc-slider-track {
-    background-color: #007bff; /* Change the color of the track */
-}
-
-/* Example styling for the slider handle */
-.rc-slider-handle {
-    background-color: #007bff; /* Change the color of the handle */
-    border-color: #007bff; /* Change the border color of the handle */
-}
-
-/* Example styling for the slider handle on hover */
-.rc-slider-handle:hover {
-    background-color: #0056b3; /* Change the color of the handle on hover */
-    border-color: #0056b3; /* Change the border color of the handle on hover */
-}
-
-/* Example styling for the slider marks */
-.rc-slider-mark {
-    color: #666; /* Change the color of the marks */
-}
-
-/* Example styling for the slider marks on active */
-.rc-slider-mark-active {
-    color: #000; /* Change the color of the marks when active */
-}
-
-/* Example styling for the slider rail */
-.rc-slider-rail {
-    background-color: #ccc; /* Change the color of the rail */
-}
-
-/* Example styling for the slider rail on hover */
-.rc-slider-rail:hover {
-    background-color: #bbb; /* Change the color of the rail on hover */
-}
-
-.slider {
-    width: 50%; /* Set the width of the slider */
-    margin: 20px auto; /* Center the slider horizontally with top and bottom margin */
-    padding: 2px; /* Add padding around the slider */
-    border-radius: 10px; /* Apply rounded corners to the slider */
-    background-color: #f0f0f0; /* Set a background color for the slider */
-    /* Add more custom styling as needed */
-}
