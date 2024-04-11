@@ -37,14 +37,10 @@ header
     font-weight: 700;
     font-size: 2em;
     text-decoration: none;
-} 
-/* .logo
-{
-    max-width: 150px;
-    margin-top: -30px;
-} */
-
-.navigation
+}
+ 
+ 
+/* .navigation
 {
     display: flex;
     justify-content: center;
@@ -67,7 +63,35 @@ header
 {
     background: #112434;
     color:#fff;
+} */
+ 
+.navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
 }
+ 
+/* Dash doesn't use li by default for dcc.Link, but you can structure it this way if you like */
+.navigation li {
+    list-style: none;
+}
+ 
+/* This targets links directly within .navigation, applicable for dcc.Link */
+.navigation .link { /* Updated from .navigation li a to .navigation .link */
+    text-decoration: none;
+    padding: 6px 15px;
+    color: #112434;
+    border-radius: 20px;
+    cursor: pointer; /* Optional: makes it clear they're clickable */
+}
+ 
+.navigation .link:hover,
+.navigation .link.active { /* Updated to use .link, assuming you add 'active' class dynamically */
+    background: #112434;
+    color: #fff;
+}
+ 
 .parallax
 {
     position: relative;
@@ -83,13 +107,14 @@ header
     left: 0;
     width: 100%;
     pointer-events: none;
-    
+   
 }
 #text
 {
     position: absolute;
-    top: 38%;
-    right:200px;
+    text-align: center;
+    top: 13%;
+    /* right:200px; */
     transform: translateY(-50%);
     font-size:4.1em;
     color:#112434;
@@ -98,9 +123,10 @@ header
 {
     position: absolute;
     top: 30%;
-    right:500px;
-    
-    font-size:4.1em;
+    right:170px;
+    text-align: center;
+   
+    font-size:2.5em;
     color:#063f6e;
 }
 .sec
@@ -132,19 +158,5 @@ header
     margin-right: 16px;
     font-size: 17px;
     border-radius: 30px;
-    
+   
   }
-/* assets/style.css */
-.upload-disabled:hover:before {
-    content: "Please share your location";
-    position: absolute;
-    width: 100%;
-    height: 50px;
-    background-color: #f8d7da; /* Light red background */
-    color: #842029; /* Dark red text */
-    border-radius: 20px;
-    line-height: 50px;
-    text-align: center;
-}
-
-
