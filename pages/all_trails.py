@@ -78,7 +78,7 @@ def create_species_card(species_name):
 def update_dynamic_content(pathname, selected_species):
     ctx = dash.callback_context
 
-    if not ctx.triggered or pathname == '/' or pathname == '/all-species':
+    if not ctx.triggered or pathname == '/all-trails' or pathname == '/all-species':
         if selected_species:
             species_to_display = [{'label': selected_species, 'value': selected_species}]
         else:
@@ -88,7 +88,7 @@ def update_dynamic_content(pathname, selected_species):
         # return species_cards
         return dbc.Row(species_cards, className="row-cols-1 row-cols-md-3 justify-content-center g-4")
 
-    elif pathname.startswith('/species/'):
+    elif 'species' in pathname:
         species_name = get_species_name_from_url(pathname.split('/')[-1])
         filtered_trails = df[df['trail_species'].str.contains(species_name, case=False)]
 
@@ -163,7 +163,7 @@ def update_url_from_dropdown(selected_species):
         species_url_part = format_species_name_for_url(selected_species)
         return f'/species/{species_url_part}'
     # Fallback or default URL if no species is selected
-    return '/'
+    return '/all-trails'
 
 
 # App layout

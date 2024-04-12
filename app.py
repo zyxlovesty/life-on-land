@@ -35,14 +35,25 @@ app.layout = html.Div([
                 html.Ul([
                     html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
-                    html.Li(dcc.Link('All Trails', href='/all-trails', id='all-trails-link', className='navigation-link')),
+                    html.Li(dcc.Link('Species Trails', href='/all-trails', id='all-trails-link', className='navigation-link')),
                 ], className='navigation'),
 
             ])
         )
     ]),
     html.Hr(),
-    dash.page_container
+    dash.page_container,
+html.Footer(
+    
+        dbc.Row(
+            dbc.Col(
+                html.P("2024 INSynC, LLC All Rights Reserved", className="footer-text", style={'text-align': 'center', 'color': 'white'}),
+                width={'size': 12, 'offset': 3}
+            )
+        ),
+        style={'background-color': '#112434', 'padding': '20px', 'width': '100%'}  # Add background color and padding
+    )
+
 ])
 
 # Callback to update the active link based on the current pathname

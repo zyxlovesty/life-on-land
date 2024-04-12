@@ -59,9 +59,9 @@ layout = html.Div([
         html.Img(src='/assets/trees_01.png', id='t1'),
         html.Img(src='/assets/man.png', id='man'),
         html.Img(src='/assets/plants.png', id='plants'),
-                html.P('Discover the Natural Wonders of Victoria', id='text'),
+        html.P('Discover the Natural Wonders of Victoria', id='text', style={'font-size':'2em'}),
         html.P('Your Gateway to Conservation and Adventure',
-               id='text2')
+               id='text2', style={'font-size':'2em', 'margin-left':'250px'})
     ]),
     html.Div(id='dummy-input', style={'display': 'none'}),
     html.Div(id='dummy-output', style={'display': 'none'}),

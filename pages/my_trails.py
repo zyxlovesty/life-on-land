@@ -100,7 +100,7 @@ layout = dbc.Container(fluid=True, children=[
         dbc.Row([
             dbc.Col([
                     html.H2('Get real time updates on your trail', id='text2',
-                            style={'margin-right': '130px', 'margin-top': '30px', 'text-align': 'center'}),
+                            style={'margin-right': '400px', 'margin-top': '20px', 'text-align': 'center'}),
                     dcc.Dropdown(
                         id='mytrail-search-dropdown',
                         options=load_trail_names(),
@@ -112,10 +112,12 @@ layout = dbc.Container(fluid=True, children=[
                             'borderRadius': '20px',
                             'fontFamily': '"Poppins", sans-serif',
                             'fontSize': '16px',
-                            'margin-top': '270px'
+                            'margin-top': '270px',
+                            'borderWidth': '2px',
+                            'borderColor': '#D9D9D9'
                         }
                     ),
-                    ], width=7),
+                    ], width=6),
                 dbc.Col([
                     html.Div([
                         html.H2('Explore your trail', style={'font-size': '3em', 'color': '#fff',
