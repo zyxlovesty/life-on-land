@@ -52,15 +52,16 @@ layout = html.Div([
     dcc.Location(id='url', refresh=False),
 
     html.Section(className='parallax', children=[
-        html.P('Discover the Natural Wonders of Victoria', id='text'),
-        html.P('Your Gateway to Conservation and Adventure',
-               id='text2'),
+
         html.Img(src='/assets/monutain_01.png', id='m1'),
         html.Img(src='/assets/trees_02.png', id='t2'),
         html.Img(src='/assets/monutain_02.png', id='m2'),
         html.Img(src='/assets/trees_01.png', id='t1'),
         html.Img(src='/assets/man.png', id='man'),
-        html.Img(src='/assets/plants.png', id='plants')
+        html.Img(src='/assets/plants.png', id='plants'),
+                html.P('Discover the Natural Wonders of Victoria', id='text'),
+        html.P('Your Gateway to Conservation and Adventure',
+               id='text2')
     ]),
     html.Div(id='dummy-input', style={'display': 'none'}),
     html.Div(id='dummy-output', style={'display': 'none'}),

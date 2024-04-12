@@ -113,20 +113,22 @@ header
 {
     position: absolute;
     text-align: center;
-    top: 25%;
+    top: 20%;
     /* right:200px; */
     transform: translateY(-50%);
-    font-size:4.1em;
+    font-size:3.9em;
     color:#112434;
+    max-width: 80%;
 }
 #text2
 {
     position: absolute;
-    top: 50%;
-    right:170px;
+    top: 40%;
+    right:240px;
     text-align: center;
+    max-width: 60%;
    
-    font-size:2.5em;
+    font-size:2.3em;
     color:#063f6e;
 }
 .sec

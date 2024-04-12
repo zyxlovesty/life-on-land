@@ -31,7 +31,7 @@ app.layout = html.Div([
     dbc.Row([
         dbc.Col(
             html.Header([
-                html.A('InSync', href='#', className='logo'),
+                html.A('WildStep', href='#', className='logo'),
                 html.Ul([
                     html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
@@ -59,4 +59,5 @@ def update_active_link(pathname):
     return home_class, my_trails_class, all_trails_class
 
 if __name__ == '__main__':
-    app.run_server(debug=False, host="0.0.0.0", port=8080)
+    #app.run_server(debug=False, host="0.0.0.0", port=8080)
+    app.run_server(debug=True)
