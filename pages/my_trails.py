@@ -34,6 +34,13 @@ clientside_callback(
 
 session, connection = get_session()
 
+external_stylesheets = [
+    'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap',
+    '/assets/style.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+    dbc.themes.MINTY
+]
+
 # df_uploads = pd.read_sql('SELECT * FROM uploads', con=connection)
 df_trails = pd.read_sql('SELECT * FROM trails', con=connection)
 
@@ -100,7 +107,7 @@ layout = dbc.Container(fluid=True, children=[
         dbc.Row([
             dbc.Col([
                     html.H2('Get real time updates on your trail', id='text2',
-                            style={'margin-right': '400px', 'margin-top': '20px', 'text-align': 'center'}),
+                            style={'margin-right': '400%', 'margin-top': '20%', 'text-align': 'center'}),
                     dcc.Dropdown(
                         id='mytrail-search-dropdown',
                         options=load_trail_names(),
