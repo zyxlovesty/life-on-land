@@ -22,7 +22,7 @@ app = dash.Dash(__name__, use_pages=True, external_stylesheets=external_styleshe
 
 from pages import home
 from pages import my_trails
-from pages import all_trails
+from pages import species_trails
 
 server = app.server
 
@@ -35,7 +35,7 @@ app.layout = html.Div([
                 html.Ul([
                     html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
-                    html.Li(dcc.Link('Species Trails', href='/all-trails', id='all-trails-link', className='navigation-link')),
+                    html.Li(dcc.Link('Species Trails', href='/species-trails', id='species-trails-link', className='navigation-link')),
                 ], className='navigation'),
 
             ])
@@ -60,13 +60,13 @@ html.Footer(
 @app.callback(
     [Output('home-link', 'className'),
      Output('my-trails-link', 'className'),
-     Output('all-trails-link', 'className')],
+     Output('species-trails-link', 'className')],
     [Input('url', 'pathname')]
 )
 def update_active_link(pathname):
     home_class = 'active' if pathname == '/' else ''
     my_trails_class = 'active' if pathname == '/my-trails' else ''
-    all_trails_class = 'active' if pathname == '/all-trails' else ''
+    all_trails_class = 'active' if pathname == '/species-trails' else ''
     return home_class, my_trails_class, all_trails_class
 
 if __name__ == '__main__':
