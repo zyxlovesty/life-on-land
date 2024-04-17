@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 from dash import dcc, html, Input, Output, State, ClientsideFunction, callback, clientside_callback
 from database import *
+import base64
 
 dash.register_page(__name__, path="/")
 
@@ -17,6 +18,10 @@ external_stylesheets = [
     dbc.themes.MINTY
 ]
 
+def b64_image(img):
+    with open(img, 'rb') as f:
+        image = f.read()
+    return 'data:image/png;base64,' + base64.b64encode(image).decode('utf-8')
 
 years = ['2019', '2020', '2021', '2022', '2023']
 new_species_counts = [39, 19, 44, 37, 144]
@@ -53,19 +58,45 @@ layout = html.Div([
 
     html.Section(className='parallax', children=[
 
-        html.Img(src='/assets/monutain_01.png', id='m1'),
-        html.Img(src='/assets/trees_02.png', id='t2'),
-        html.Img(src='/assets/monutain_02.png', id='m2'),
-        html.Img(src='/assets/trees_01.png', id='t1'),
-        html.Img(src='/assets/man.png', id='man'),
-        html.Img(src='/assets/plants.png', id='plants'),
-        html.P('Discover the Natural Wonders of Victoria', id='text', style={'font-size':'2em'}),
-        html.P('Your Gateway to Conservation and Adventure',
-               id='text2', style={'font-size':'2em', 'margin-left':'250px'})
+        # html.Img(src='/assets/monutain_01.png', id='m1'),
+        # html.Img(src='/assets/trees_02.png', id='t2'),
+        # html.Img(src='/assets/monutain_02.png', id='m2'),
+        # html.Img(src='/assets/trees_01.png', id='t1'),
+        # html.Img(src='/assets/man.png', id='man'),
+        # html.Img(src='/assets/plants.png', id='plants'),
+        dbc.Row([
+            dbc.Col([
+                html.H1('Discover.', style={'font-size': '3em'}),
+                html.P(""),
+                html.H1('Encounter.', style={'font-size': '3em'}),
+                html.P(""),
+                html.H1('Conserve.', style={'font-size': '3em'}),
+                html.P(""),
+                html.P("Join us in exploring and", style={'font-size': '2em'}),
+                html.P("protecting Victoria's biodiversity", style={'font-size': '2em'}),
+                html.Button("Learn More", id="learn-more-btn", n_clicks=0, 
+                            style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px'}),
+            ], width=6),  # This sets the column to take half of the row (6 out of 12 columns)
+            dbc.Col([
+                html.Img(src='/assets/home.png', style={'height': '50%', 'width': '30%'})
+            ], width=6)  # This sets the other column also to take half of the row
+        ], justify="start", style={'display': 'flex'})
+        # html.Button()
     ]),
+    html.Div(id="additional-content", style={'display': 'none'}, children=[
+        html.P("Here's some additional information you might find interesting..."),
+        html.Button("^", id="retract-btn", style={
+                'position': 'relative', 'top': '5px', 'right': '10px', 'cursor': 'pointer'
+        })
+    ]),
+
     html.Div(id='dummy-input', style={'display': 'none'}),
     html.Div(id='dummy-output', style={'display': 'none'}),
     # For the divs with id="right", place the icon after the text
+    
+    
+    
+    
     html.Div([
         html.H6([
             "Every trail you explore can be a step towards conservation. Learn about the unique flora and fauna that make Victoria a biodiversity hotspot.",
@@ -130,6 +161,20 @@ layout = html.Div([
         ])
     ], style={'margin-top': '40px', 'padding': '40px'})
 ])
+
+@callback(
+    Output('additional-content', 'style'),
+    [Input('learn-more-btn', 'n_clicks'), Input('retract-btn', 'n_clicks')],
+    [State('additional-content', 'style')]
+)
+def toggle_additional_content(learn_more_clicks, retract_clicks, current_style):
+    triggered_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
+    if triggered_id == 'learn-more-btn' and learn_more_clicks:
+        return {'display': 'block'} if current_style['display'] == 'none' else {'display': 'none'}
+    elif triggered_id == 'retract-btn':
+        return {'display': 'none'}
+    return current_style
+
 
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
