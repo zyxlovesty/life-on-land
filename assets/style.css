@@ -9,7 +9,7 @@
 body
 {
     overflow-x: hidden;
-    background: #fff;
+    background: #F9F1E8;
     min-height: 100vh;
 }
 header
@@ -33,14 +33,14 @@ header
     } */
 .logo
 {
-    color:#112434;
+    color:#545646;
     font-weight: 700;
     font-size: 2em;
     text-decoration: none;
 }
  
  
-/* .navigation
+.navigation
 {
     display: flex;
     justify-content: center;
@@ -55,43 +55,17 @@ header
 {
     text-decoration: none;
     padding: 6px 15px;
-    color: #112434;
+    color: #545646;
     border-radius: 20px;
 }
 .navigation li a:hover,
 .navigation li a.active
 {
-    background: #112434;
-    color:#fff;
-} */
- 
-.navigation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 40px;
+    background: #545646;
+    color:#F9F1E8;
 }
- 
-/* Dash doesn't use li by default for dcc.Link, but you can structure it this way if you like */
-.navigation li {
-    list-style: none;
-}
- 
-/* This targets links directly within .navigation, applicable for dcc.Link */
-.navigation .link { /* Updated from .navigation li a to .navigation .link */
-    text-decoration: none;
-    padding: 6px 15px;
-    color: #112434;
-    border-radius: 20px;
-    cursor: pointer; /* Optional: makes it clear they're clickable */
-}
- 
-.navigation .link:hover,
-.navigation .link.active { /* Updated to use .link, assuming you add 'active' class dynamically */
-    background: #112434;
-    color: #fff;
-}
- 
+
+
 .parallax
 {
     position: relative;
@@ -162,3 +136,48 @@ header
     border-radius: 30px;
    
   }
+.circle {
+    position: relative;
+    width: 20%;
+    display: inline-block;
+    cursor: pointer;
+    transition: filter 0.3s;
+}
+
+.circle img {
+    width: 100%;
+    height: auto;
+    transition: filter 0.3s;
+}
+
+.circle:hover img {
+    filter: blur(3px);
+}
+
+.default-text {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 2em;
+    color: #F9F1E8;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.hover-text {
+    display: none;  /* Initially hidden */
+}
+
+.circle:hover .default-text {
+    display: none;
+}
+
+.circle:hover .hover-text {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 2em;
+    color: #F9F1E8;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+

@@ -6,12 +6,12 @@ window.dash_clientside.clientside = {
         gsap.from("#m1", {scrollTrigger: {scrub: true}, x: 200});
         gsap.from("#m2", {scrollTrigger: {scrub: true}, x: 100});
         gsap.from("#t2", {scrollTrigger: {scrub: true}, x: -100});
-        gsap.from("#t1", {scrollTrigger: {scrub: true}, x: 50});
+        gsap.from("#t1", {scrollTrigger: {scrub: true}, x: 100});
         gsap.from("#man", {scrollTrigger: {scrub: true}, x: -200});
         gsap.from("#plants", {scrollTrigger: {scrub: true}, x: -100});
         gsap.from("#right1", {scrollTrigger: {scrub: true}, x: -700});
-        gsap.from("#left1", {scrollTrigger: {scrub: true}, x: 700});
-        gsap.from("#right2", {scrollTrigger: {scrub: true}, x: -700});
+        gsap.from("#left1", {scrollTrigger: {scrub: true}, x: 150});
+        gsap.from("#right2", {scrollTrigger: {scrub: true}, x: -150});
         gsap.from("#left2", {scrollTrigger: {scrub: true}, x: 700});
         gsap.from("#line_c", {
             scrollTrigger: {
