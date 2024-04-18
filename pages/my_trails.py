@@ -107,7 +107,7 @@ layout = dbc.Container(fluid=True, children=[
         dbc.Row([
             dbc.Col([
                     html.H2('Get real time updates on your trail', id='text2',
-                            style={'margin-right': '400%', 'margin-top': '20%', 'text-align': 'center'}),
+                            style={'margin-top': '20%', 'text-align': 'center', 'margin-right':'80px'}),
                     dcc.Dropdown(
                         id='mytrail-search-dropdown',
                         options=load_trail_names(),
@@ -124,31 +124,26 @@ layout = dbc.Container(fluid=True, children=[
                             'borderColor': '#D9D9D9'
                         }
                     ),
-                    ], width=6),
+                    ], width=7),
                 dbc.Col([
                     html.Div([
-                        html.H2('Explore your trail', style={'font-size': '3em', 'color': '#fff',
-                                                             'margin-bottom': '10px', 'margin-top': '10px'}),
-                        html.P("Embark on a journey through the heart of Victoria's trails, where every step you take reveals the delicate balance of life teeming with unique and endangered species that are struggling to survive.", style={
-                            'font-size': '1em', 'color': '#fff'}),
-                        html.P('Explore the diverse trails of Victoria with our carefully curated selection.',
-                               style={'font-size': '1em', 'color': '#fff'}),
-                        html.P("    "),
-                        html.H4('Happy Hiking!', style={'margin-top': '20px', 'margin-bottom': '10px', 'color': '#fff'})
-                    ], style={
-                        'background-color': '#112434',
-                        'border': '2px solid white',
-                        'padding': '40px',
-                        'border-radius': '15px',
-                    })
+                        html.Img(src=b64_image('assets/element1.png'), style={'width':'50%', 'height':'auto', 'margin-left':'700px', 'z-index':'-1'}),
+                        html.H2('Be Alert.', style={'font-size': '3em', 'color': '#F9F1E8', 'margin-bottom': '10px', 'margin-top': '10px', 'margin-left':'150px'}),
+                        # html.P("Embark on a journey through the heart of Victoria's trails, where every step you take reveals the delicate balance of life teeming with unique and endangered species that are struggling to survive.", style={
+                        #     'font-size': '1em', 'color': '#fff'}),
+                        # html.P('Explore the diverse trails of Victoria with our carefully curated selection.',
+                        #        style={'font-size': '1em', 'color': '#fff'}),
+                        html.P(" "),
+                        html.H4('Keep yourself and your surroundings safe', style={'margin-top': '20px', 'margin-bottom': '10px', 'color': '#F9F1E8', 'margin-left':'100px'})
+                    ])
                 ], width=5)
                 ]),
-        html.Img(src='/assets/monutain_01.png', id='m1', style={'z-index': '-1', 'height': '50%'}),
-        html.Img(src='/assets/trees_02.png', id='t2', style={'z-index': '-1', 'top': '357px', 'height': '60%'}),
-        html.Img(src='/assets/monutain_02.png', id='m2', style={'z-index': '-1', 'height': '50%'}),
-        html.Img(src='/assets/trees_01.png', id='t1', style={'z-index': '-1'}),
-        # html.Img(src='/assets/man.png', id='man'),
-        html.Img(src='/assets/plants.png', id='plants', style={'z-index': '-1'})
+        # html.Img(src='/assets/monutain_01.png', id='m1', style={'z-index': '-1', 'height': '50%'}),
+        # html.Img(src='/assets/trees_02.png', id='t2', style={'z-index': '-1', 'top': '357px', 'height': '60%'}),
+        # html.Img(src='/assets/monutain_02.png', id='m2', style={'z-index': '-1', 'height': '50%'}),
+        # html.Img(src='/assets/trees_01.png', id='t1', style={'z-index': '-1'}),
+        # # html.Img(src='/assets/man.png', id='man'),
+        # html.Img(src='/assets/plants.png', id='plants', style={'z-index': '-1'})
     ]),
     html.Div(id='scroll-trigger', style={'display': 'none'}),
     html.Div(id='mytrail-dummy-input', style={'display': 'none'}),
@@ -157,42 +152,16 @@ layout = dbc.Container(fluid=True, children=[
     html.Div(
         dbc.Row([
                 dbc.Col([
-                    # dl.Map(
-                    #     id='mytrail-map',
-                    #     children=[dl.TileLayer(), dl.LayerGroup(id='mytrail-layer'), dl.LayerGroup(id='myimage-layer')],
-                    #     style={'width': '100%', 'height': '640px', 'margin-top': '40px',
-                    #            'margin-bottom': '40px', 'margin-left': '20px'},
-                    #     center=(-37.8136, 144.9631),
-                    #     zoom=12
-                    # )
-                    dl.Map(
-                        id='mytrail-map',
-                        children=[
-                            dl.TileLayer(),
-                            dl.LayerGroup(id='mytrail-layer'),
-                            dcc.Loading(  # Wrap the layer or component being updated with the loading indicator
-                                id="loading-layer",
-                                type="default",
-                                children=dl.LayerGroup(id='myimage-layer')
-                            )
-                        ],
-                        style={'width': '100%', 'height': '640px', 'margin-top': '40px',
-                               'margin-bottom': '40px', 'margin-left': '20px'},
-                        center=(-37.8136, 144.9631),
-                        zoom=12
-                    ),
-                ], width=15, lg=7),  # Map takes up 6 columns on large screens, full width on smaller ones
-                dbc.Col([
                     dbc.Row(justify="center", className="h-100 align-items-center", children=[
                         dbc.Col([
                             html.H4("See what other hikers have found on your trail",
-                                    style={'color': '#fff', 'text-align': 'center'}),
+                                    style={'color': '#F9F1E8', 'text-align': 'center'}),
                             html.P("   "),
                             html.P("Hover over each icon on the map to find the hike start and end points.",
-                                   style={'color': '#fff', 'text-align': 'center'}),
+                                   style={'color': '#F9F1E8', 'text-align': 'center'}),
                             html.P("   "),
-                            html.P("Please share your location before seeing real-time updates",
-                                   style={'color': '#fff', 'text-align': 'center'}),
+                            # html.P("Please share your location before seeing real-time updates",
+                            #        style={'color': '#545646', 'text-align': 'center'}),
                             dcc.Loading(
                                 id="loading-upload",
                                 type="default",  # Or any other type you prefer
@@ -200,9 +169,9 @@ layout = dbc.Container(fluid=True, children=[
                                     dcc.Upload(
                                         id='upload-image',
                                         children=html.Div([html.I(className="fas fa-solid fa-upload"),
-                                                           '  Drag and Drop or Select Files'], style={'margin-top': '10px'}),
+                                                           '   Found something interesting? Upload it!'], style={'margin-top': '10px'}),
                                         style={'display': 'block', 'width': '100%', 'height': '50px',
-                                               'color': '#112434', 'backgroundColor': '#fff', 'lineHeight': '50px',
+                                               'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
                                                'border': 'none', 'borderRadius': '20px', 'textAlign': 'center',
                                                'cursor': 'pointer', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'},  # Initial style (disabled)
                                         accept='.png,.jpg,.jpeg,.heic',
@@ -218,8 +187,40 @@ layout = dbc.Container(fluid=True, children=[
                             # ])
                         ], width=10)  # Adjust width as needed for aesthetic preferences
                     ])
-                ], width=9, lg=5, className="d-flex"),  # Make the column a flex container
-                ], style={'backgroundColor': '#112434'})
+                ], width=9, lg=5, className="d-flex"),
+                dbc.Col([
+                    # dl.Map(
+                    #     id='mytrail-map',
+                    #     children=[dl.TileLayer(), dl.LayerGroup(id='mytrail-layer'), dl.LayerGroup(id='myimage-layer')],
+                    #     style={'width': '100%', 'height': '640px', 'margin-top': '40px',
+                    #            'margin-bottom': '40px', 'margin-left': '20px'},
+                    #     center=(-37.8136, 144.9631),
+                    #     zoom=12
+                    # )
+                    dl.Map(
+                        id='mytrail-map',
+                        children=[
+                            dl.TileLayer(
+                                # url='https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+                                # attribution='© OpenStreetMap contributors'
+                                url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png',
+                                attribution = 'Tiles Courtesy of <a href="http://www.esri.com/software/arcgis/arcgisonline/maps/maps-and-map-layers" target="_blank">Esri</a>'
+                            ),
+                            dl.LayerGroup(id='mytrail-layer'),
+                            dcc.Loading(  # Wrap the layer or component being updated with the loading indicator
+                                id="loading-layer",
+                                type="default",
+                                children=dl.LayerGroup(id='myimage-layer')
+                            )
+                        ],
+                        style={'width': 'auto', 'height': '500px', 'margin-top': '40px',
+                               'margin-bottom': '40px', 'margin-right': '40px'},
+                        center=(-37.8136, 144.9631),
+                        zoom=12
+                    ),
+                ], width=15, lg=7),  # Map takes up 6 columns on large screens, full width on smaller ones
+  # Make the column a flex container
+                ], style={'backgroundColor': '#545646'})
     ),
     dbc.Modal([
         dbc.ModalHeader(dbc.ModalTitle("Action Required")),
@@ -258,22 +259,22 @@ def update_upload_style_and_tooltip(position, trail_value, style):
     # Check if both the location is shared (position is not None) and a trail is selected (trail_value is not None)
     if position and trail_value:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#112434', 'backgroundColor': '#fff', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'auto',
                 'cursor': 'pointer', 'transition': 'all 0.2s ease-in-out', 'opacity': '1'}, False, {'display': 'none'}
     elif position and not trail_value:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#112434', 'backgroundColor': '#fff', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'none',
                 'cursor': 'not-allowed', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'}, False, {'display': 'block'}
     elif trail_value and not position:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#112434', 'backgroundColor': '#fff', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'none',
                 'cursor': 'not-allowed', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'}, False, {'display': 'block'}
     else:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#112434', 'backgroundColor': '#fff', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'none',
                 'cursor': 'not-allowed', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'}, False, {'display': 'block'}
 
