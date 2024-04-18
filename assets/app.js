@@ -1,18 +1,4 @@
 if (!window.dash_clientside) {window.dash_clientside = {};}
-<<<<<<< HEAD
-
-window.dash_clientside.clientside = {
-    trigger_gsap_animation: function() {
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.from("#m1", {scrollTrigger: {scrub: true}, y: 200});
-        gsap.from("#m2", {scrollTrigger: {scrub: true}, y: 100});
-        gsap.from("#t2", {scrollTrigger: {scrub: true}, x: -100});
-        gsap.from("#t1", {scrollTrigger: {scrub: true}, x: 50});
-        gsap.from("#man", {scrollTrigger: {scrub: true}, x: -200});
-        gsap.from("#plants", {scrollTrigger: {scrub: true}, x: -100});
-        
-        return window.dash_clientside.no_update; // Important for preventing update loops
-=======
  
 window.dash_clientside.clientside = {
     trigger_gsap_animation: function() {
@@ -27,6 +13,7 @@ window.dash_clientside.clientside = {
         gsap.from("#left1", {scrollTrigger: {scrub: true}, x: 150});
         gsap.from("#right2", {scrollTrigger: {scrub: true}, x: -150});
         gsap.from("#left2", {scrollTrigger: {scrub: true}, x: 700});
+
         gsap.from("#alert", {
             scrollTrigger: {
                 trigger: "#alert",
@@ -80,6 +67,5 @@ window.dash_clientside.clientside = {
             }, 200); // A slight delay to ensure the DOM has updated
         }
         return ''; // Prevent updating any Output
->>>>>>> 5da007c (A brief description of the changes)
     }
 }
