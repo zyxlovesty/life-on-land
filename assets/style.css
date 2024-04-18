@@ -9,7 +9,11 @@
 body
 {
     overflow-x: hidden;
+<<<<<<< HEAD
     background: #fff;
+=======
+    background: #F9F1E8;
+>>>>>>> 5da007c (A brief description of the changes)
     min-height: 100vh;
 }
 header
@@ -33,6 +37,7 @@ header
     } */
 .logo
 {
+<<<<<<< HEAD
     color:#112434;
     font-weight: 700;
     font-size: 2em;
@@ -44,6 +49,15 @@ header
     margin-top: -30px;
 } */
 
+=======
+    color:#545646;
+    font-weight: 700;
+    font-size: 2em;
+    text-decoration: none;
+}
+ 
+ 
+>>>>>>> 5da007c (A brief description of the changes)
 .navigation
 {
     display: flex;
@@ -59,15 +73,27 @@ header
 {
     text-decoration: none;
     padding: 6px 15px;
+<<<<<<< HEAD
     color: #112434;
+=======
+    color: #545646;
+>>>>>>> 5da007c (A brief description of the changes)
     border-radius: 20px;
 }
 .navigation li a:hover,
 .navigation li a.active
 {
+<<<<<<< HEAD
     background: #112434;
     color:#fff;
 }
+=======
+    background: #545646;
+    color:#F9F1E8;
+}
+
+
+>>>>>>> 5da007c (A brief description of the changes)
 .parallax
 {
     position: relative;
@@ -83,16 +109,41 @@ header
     left: 0;
     width: 100%;
     pointer-events: none;
+<<<<<<< HEAD
     
+=======
+   
+>>>>>>> 5da007c (A brief description of the changes)
 }
 #text
 {
     position: absolute;
+<<<<<<< HEAD
     top: 38%;
     right:200px;
     transform: translateY(-50%);
     font-size:4.1em;
     color:#112434;
+=======
+    text-align: center;
+    top: 20%;
+    /* right:200px; */
+    transform: translateY(-50%);
+    font-size:3.9em;
+    color:#112434;
+    max-width: 80%;
+}
+#text2
+{
+    position: absolute;
+    top: 40%;
+    right:240px;
+    text-align: center;
+    max-width: 60%;
+   
+    font-size:2.3em;
+    color:#063f6e;
+>>>>>>> 5da007c (A brief description of the changes)
 }
 .sec
 {
@@ -123,6 +174,56 @@ header
     margin-right: 16px;
     font-size: 17px;
     border-radius: 30px;
+<<<<<<< HEAD
     
   }
+=======
+   
+  }
+.circle {
+    position: relative;
+    width: 20%;
+    display: inline-block;
+    cursor: pointer;
+    transition: filter 0.3s;
+}
+
+.circle img {
+    width: 100%;
+    height: auto;
+    transition: filter 0.3s;
+}
+
+.circle:hover img {
+    filter: blur(3px);
+}
+
+.default-text {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 2em;
+    color: #F9F1E8;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.hover-text {
+    display: none; /* Initially hidden */
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 1.2em;
+    color: #F9F1E8;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.circle:hover .default-text {
+    display: none; /* Hide default text on hover */
+}
+
+.circle:hover .hover-text {
+    display: block; /* Show hover text on hover */
+}
+
+>>>>>>> 5da007c (A brief description of the changes)
 

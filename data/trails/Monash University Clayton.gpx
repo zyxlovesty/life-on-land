@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" creator="mapstogpx.com" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd">
+  <metadata>
+    <link href="http://www.mapstogpx.com">
+      <text>Sverrir Sigmundarson</text>
+    </link>
+    <!--desc>Map data ©2024 Google</desc-->
+    <!--copyright author="Google Inc">
+    	<year>2024</year>
+    	<license>https://developers.google.com/maps/terms</license>
+    </copyright-->
+    <!--url>https://www.google.co.uk/maps/dir/Monash University Clayton Bus Loop, Clayton VIC/Monash Sport, Monash University Clayton Campus, Scenic Boulevard, Clayton VIC/Woodside Building for Technology and Design, 20 Exhibition Walk, Clayton VIC 3168/@-37.9120883,145.1315826,17z/am=t/data=!3m1!4b1!4m20!4m19!1m5!1m1!1s0x6ad66b3cc00f2ebb:0xcdc97f21b53fe7f1!2m2!1d145.1315882!2d-37.9141254!1m5!1m1!1s0x6ad66acb41ad81c7:0x3d1377997d8de0b2!2m2!1d145.1361482!2d-37.9128309!1m5!1m1!1s0x6ad66b7b5148f6f3:0x389a5526496c59a0!2m2!1d145.135392!2d-37.9096171!3e2?entry=ttu&hl=en</url-->
+    <time>2024-04-07T17:34:48Z</time>
+  </metadata>
+  <wpt lat="-37.9141254" lon="145.1315882">
+    <name>Monash University Clayton Bus Loop</name>
+    <desc>Monash University Clayton Bus Loop, Clayton-Caulfield Bus Stop Dropped pin, Clayton VIC 3168, Australia</desc>
+  </wpt>
+  <wpt lat="-37.9128309" lon="145.1361482">
+    <name>Monash Sport</name>
+    <desc>Monash Sport, Monash University Clayton Campus, 42 Scenic Blvd, Clayton VIC 3168, Australia</desc>
+  </wpt>
+  <wpt lat="-37.9096171" lon="145.135392">
+    <name>Woodside Building for Technology and Design</name>
+    <desc>Woodside Building for Technology and Design, 20 Exhibition Walk, Clayton VIC 3168, Australia</desc>
+  </wpt>
+<trk>
+  <name>Monash University Clayton Bus Loop to Woodside Building for Technology and Design</name>
+  <number>1</number>
+  <trkseg>
+  <trkpt lat="-37.9143393" lon="145.1318351">
+    <name>TP001</name>
+  </trkpt>
+  <trkpt lat="-37.91436" lon="145.13202">
+    <name>TP002</name>
+  </trkpt>
+  <trkpt lat="-37.91448" lon="145.1323">
+    <name>TP003</name>
+  </trkpt>
+  <trkpt lat="-37.91451" lon="145.13239">
+    <name>TP004</name>
+  </trkpt>
+  <trkpt lat="-37.91453" lon="145.13248">
+    <name>TP005</name>
+  </trkpt>
+  <trkpt lat="-37.91456" lon="145.13272">
+    <name>TP006</name>
+  </trkpt>
+  <trkpt lat="-37.9145612" lon="145.1327213">
+    <name>TP007</name>
+  </trkpt>
+  <trkpt lat="-37.91404" lon="145.13291">
+    <name>TP008</name>
+  </trkpt>
+  <trkpt lat="-37.9140426" lon="145.1329055">
+    <name>TP009</name>
+  </trkpt>
+  <trkpt lat="-37.91415" lon="145.13333">
+    <name>TP010</name>
+  </trkpt>
+  <trkpt lat="-37.91419" lon="145.13347">
+    <name>TP011</name>
+  </trkpt>
+  <trkpt lat="-37.91426" lon="145.13358">
+    <name>TP012</name>
+  </trkpt>
+  <trkpt lat="-37.9142554" lon="145.1335824">
+    <name>TP013</name>
+  </trkpt>
+  <trkpt lat="-37.91434" lon="145.13419">
+    <name>TP014</name>
+  </trkpt>
+  <trkpt lat="-37.91432" lon="145.13428">
+    <name>TP015</name>
+  </trkpt>
+  <trkpt lat="-37.91435" lon="145.13457">
+    <name>TP016</name>
+  </trkpt>
+  <trkpt lat="-37.91434" lon="145.13469">
+    <name>TP017</name>
+  </trkpt>
+  <trkpt lat="-37.91437" lon="145.13485">
+    <name>TP018</name>
+  </trkpt>
+  <trkpt lat="-37.9143669" lon="145.134853">
+    <name>TP019</name>
+  </trkpt>
+  <trkpt lat="-37.91438" lon="145.1349">
+    <name>TP020</name>
+  </trkpt>
+  <trkpt lat="-37.91435" lon="145.13487">
+    <name>TP021</name>
+  </trkpt>
+  <trkpt lat="-37.91394" lon="145.13506">
+    <name>TP022</name>
+  </trkpt>
+  <trkpt lat="-37.91386" lon="145.13515">
+    <name>TP023</name>
+  </trkpt>
+  <trkpt lat="-37.91378" lon="145.13513">
+    <name>TP024</name>
+  </trkpt>
+  <trkpt lat="-37.91363" lon="145.1352">
+    <name>TP025</name>
+  </trkpt>
+  <trkpt lat="-37.91356" lon="145.13523">
+    <name>TP026</name>
+  </trkpt>
+  <trkpt lat="-37.91348" lon="145.13528">
+    <name>TP027</name>
+  </trkpt>
+  <trkpt lat="-37.91344" lon="145.1353">
+    <name>TP028</name>
+  </trkpt>
+  <trkpt lat="-37.91337" lon="145.13535">
+    <name>TP029</name>
+  </trkpt>
+  <trkpt lat="-37.91334" lon="145.13536">
+    <name>TP030</name>
+  </trkpt>
+  <trkpt lat="-37.91329" lon="145.1354">
+    <name>TP031</name>
+  </trkpt>
+  <trkpt lat="-37.91325" lon="145.13542">
+    <name>TP032</name>
+  </trkpt>
+  <trkpt lat="-37.91319" lon="145.13548">
+    <name>TP033</name>
+  </trkpt>
+  <trkpt lat="-37.91308" lon="145.13567">
+    <name>TP034</name>
+  </trkpt>
+  <trkpt lat="-37.91297" lon="145.13576">
+    <name>TP035</name>
+  </trkpt>
+  <trkpt lat="-37.91285" lon="145.13585">
+    <name>TP036</name>
+  </trkpt>
+  <trkpt lat="-37.91274" lon="145.13591">
+    <name>TP037</name>
+  </trkpt>
+  <trkpt lat="-37.9127421" lon="145.1359074">
+    <name>TP038</name>
+  </trkpt>
+  <trkpt lat="-37.9127421" lon="145.1359074">
+    <name>TP039</name>
+  </trkpt>
+  <trkpt lat="-37.91261" lon="145.13597">
+    <name>TP040</name>
+  </trkpt>
+  <trkpt lat="-37.9125" lon="145.13603">
+    <name>TP041</name>
+  </trkpt>
+  <trkpt lat="-37.91242" lon="145.13602">
+    <name>TP042</name>
+  </trkpt>
+  <trkpt lat="-37.91219" lon="145.13614">
+    <name>TP043</name>
+  </trkpt>
+  <trkpt lat="-37.91195" lon="145.13625">
+    <name>TP044</name>
+  </trkpt>
+  <trkpt lat="-37.91185" lon="145.1363">
+    <name>TP045</name>
+  </trkpt>
+  <trkpt lat="-37.91176" lon="145.13634">
+    <name>TP046</name>
+  </trkpt>
+  <trkpt lat="-37.91167" lon="145.13637">
+    <name>TP047</name>
+  </trkpt>
+  <trkpt lat="-37.91159" lon="145.1364">
+    <name>TP048</name>
+  </trkpt>
+  <trkpt lat="-37.91153" lon="145.13646">
+    <name>TP049</name>
+  </trkpt>
+  <trkpt lat="-37.91149" lon="145.13647">
+    <name>TP050</name>
+  </trkpt>
+  <trkpt lat="-37.91142" lon="145.13649">
+    <name>TP051</name>
+  </trkpt>
+  <trkpt lat="-37.91137" lon="145.1365">
+    <name>TP052</name>
+  </trkpt>
+  <trkpt lat="-37.91125" lon="145.13652">
+    <name>TP053</name>
+  </trkpt>
+  <trkpt lat="-37.91079" lon="145.13661">
+    <name>TP054</name>
+  </trkpt>
+  <trkpt lat="-37.91071" lon="145.13658">
+    <name>TP055</name>
+  </trkpt>
+  <trkpt lat="-37.91044" lon="145.13664">
+    <name>TP056</name>
+  </trkpt>
+  <trkpt lat="-37.91037" lon="145.1367">
+    <name>TP057</name>
+  </trkpt>
+  <trkpt lat="-37.91029" lon="145.13667">
+    <name>TP058</name>
+  </trkpt>
+  <trkpt lat="-37.91023" lon="145.13668">
+    <name>TP059</name>
+  </trkpt>
+  <trkpt lat="-37.9102302" lon="145.1366818">
+    <name>TP060</name>
+  </trkpt>
+  <trkpt lat="-37.91021" lon="145.13648">
+    <name>TP061</name>
+  </trkpt>
+  <trkpt lat="-37.91017" lon="145.13645">
+    <name>TP062</name>
+  </trkpt>
+  <trkpt lat="-37.91015" lon="145.13643">
+    <name>TP063</name>
+  </trkpt>
+  <trkpt lat="-37.91011" lon="145.13639">
+    <name>TP064</name>
+  </trkpt>
+  <trkpt lat="-37.9101076" lon="145.1363896">
+    <name>TP065</name>
+  </trkpt>
+  <trkpt lat="-37.91011" lon="145.13637">
+    <name>TP066</name>
+  </trkpt>
+  <trkpt lat="-37.91011" lon="145.13636">
+    <name>TP067</name>
+  </trkpt>
+  <trkpt lat="-37.91011" lon="145.13635">
+    <name>TP068</name>
+  </trkpt>
+  <trkpt lat="-37.9101" lon="145.13622">
+    <name>TP069</name>
+  </trkpt>
+  <trkpt lat="-37.91008" lon="145.13603">
+    <name>TP070</name>
+  </trkpt>
+  <trkpt lat="-37.91006" lon="145.13588">
+    <name>TP071</name>
+  </trkpt>
+  <trkpt lat="-37.91006" lon="145.13585">
+    <name>TP072</name>
+  </trkpt>
+  <trkpt lat="-37.91004" lon="145.13566">
+    <name>TP073</name>
+  </trkpt>
+  <trkpt lat="-37.90963" lon="145.13569">
+    <name>TP074</name>
+  </trkpt>
+  <trkpt lat="-37.9096332" lon="145.1356903">
+    <name>TP075</name>
+  </trkpt>
+  </trkseg>
+</trk>
+</gpx>

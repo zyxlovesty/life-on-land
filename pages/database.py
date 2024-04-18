@@ -33,8 +33,6 @@ class Uploads(Base):
     upload_time = db.Column(db.String(50))
     upload_img = db.Column(db.BLOB)
     upload_species = db.Column(db.String(100))
-<<<<<<< HEAD
-=======
     
     
     
@@ -44,4 +42,3 @@ class Uploads(Base):
 # connection = engine.connect()
 # trails = pd.read_sql('SELECT * FROM trails', con=connection)
 # uploads = pd.read_sql('SELECT * FROM uploads', con=connection)
->>>>>>> 5da007c (A brief description of the changes)
