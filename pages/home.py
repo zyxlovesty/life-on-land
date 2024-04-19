@@ -54,6 +54,13 @@ clientside_callback(
     Output('dummy-output', 'children'),
     [Input('dummy-input', 'children')]
 )
+
+clientside_callback(
+    ClientsideFunction(namespace='clientside', function_name='scroll_to_text'),
+    # Dummy output, we don't actually need to update anything in the layout
+    Output('dummy-output-2', 'children'),
+    [Input('learn-more-btn', 'n_clicks')]
+)
 #  Pie chart data
 labels = ['Extinct', 'Critically Endangered', 'Endangered', 'Vulnerable']
 values = [53, 556, 1081, 308]
@@ -152,7 +159,8 @@ layout = html.Div([
     ]),
     
     html.Div(id='dummy-input', style={'display': 'none'}),
-    html.Div(id='dummy-output', style={'display': 'none'})
+    html.Div(id='dummy-output', style={'display': 'none'}),
+    html.Div(id='dummy-output-2', style={'display': 'none'})
 ])
 
 @callback(
