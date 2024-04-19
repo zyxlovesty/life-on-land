@@ -1,9 +1,10 @@
 # team24
 
-gcloud builds submit --tag gcr.io/life-on-land-419810/wild-step --project=life-on-land-419810
+python -m venv myenv
+C:\Users\milia\AppData\Local\Programs\Python\Python39\python.exe -m venv myenv
+.\myenv\Scripts\Activate
 
-gcloud run deploy --image gcr.io/life-on-land-419810/wild-step --platform managed --project=life-on-land-419810 --allow-unauthenticated
-
+deactivate
 
 gcloud builds submit --tag gcr.io/wild-step/wild-step-app --project=wild-step
 gcloud run deploy --image gcr.io/wild-step/wild-step-app --platform managed --project=wild-step --allow-unauthenticated
