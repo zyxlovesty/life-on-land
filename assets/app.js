@@ -13,6 +13,16 @@ window.dash_clientside.clientside = {
         gsap.from("#left1", {scrollTrigger: {scrub: true}, x: 150});
         gsap.from("#right2", {scrollTrigger: {scrub: true}, x: -150});
         gsap.from("#left2", {scrollTrigger: {scrub: true}, x: 700});
+
+        gsap.from("#alert", {
+            scrollTrigger: {
+                trigger: "#alert",
+                start: "top bottom", // When the top of #line_c hits the bottom of the viewport
+                end: "bottom top",
+                scrub: true
+            },
+            x: -1050
+        });
         gsap.from("#line_c", {
             scrollTrigger: {
                 trigger: "#line_c",
@@ -45,5 +55,17 @@ window.dash_clientside.clientside = {
             }, 100); // A slight delay to ensure the DOM has updated
         }
         return window.dash_clientside.no_update; // Prevent updating any Output
+    },
+
+    scroll_to_text: function(n_clicks) {
+        if(n_clicks > 0) {
+            setTimeout(function() {
+                document.getElementById('additional-content').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 200); // A slight delay to ensure the DOM has updated
+        }
+        return ''; // Prevent updating any Output
     }
 }
