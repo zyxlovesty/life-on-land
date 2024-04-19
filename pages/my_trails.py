@@ -106,8 +106,8 @@ layout = dbc.Container(fluid=True, children=[
     html.Section(className='parallax', children=[
         dbc.Row([
             dbc.Col([
-                    html.H2('Get real time updates on your trail', id='text2',
-                            style={'margin-top': '20%', 'text-align': 'center', 'margin-right':'80px'}),
+                    html.H2('Get real time updates on your trail', id='text3',
+                            style={'margin-top': '-3%', 'text-align': 'center', 'margin-right':'80px'}),
                     dcc.Dropdown(
                         id='mytrail-search-dropdown',
                         options=load_trail_names(),
@@ -119,7 +119,8 @@ layout = dbc.Container(fluid=True, children=[
                             'borderRadius': '20px',
                             'fontFamily': '"Poppins", sans-serif',
                             'fontSize': '16px',
-                            'margin-top': '270px',
+                            'margin-top': '40px',
+                            'margin-left': '80px',
                             'borderWidth': '2px',
                             'borderColor': '#D9D9D9'
                         }
@@ -127,14 +128,14 @@ layout = dbc.Container(fluid=True, children=[
                     ], width=7),
                 dbc.Col([
                     html.Div([
-                        html.Img(src=b64_image('assets/element1.png'), style={'width':'50%', 'height':'auto', 'margin-left':'700px', 'z-index':'-1'}),
-                        html.H2('Be Alert.', style={'font-size': '3em', 'color': '#F9F1E8', 'margin-bottom': '10px', 'margin-top': '10px', 'margin-left':'150px'}),
+                        html.Img(src=b64_image('assets/element1.png'), id = 'alert', style={'width':'50%', 'height':'auto', 'margin-left':'1000px', 'z-index':'-1'}),
+                        html.H2('Be Alert.', id = 'text4',style={'font-size': '3em', 'color': '#F9F1E8', 'margin-bottom': '10px', 'margin-top': '-12%', 'margin-left':'100px'}),
                         # html.P("Embark on a journey through the heart of Victoria's trails, where every step you take reveals the delicate balance of life teeming with unique and endangered species that are struggling to survive.", style={
                         #     'font-size': '1em', 'color': '#fff'}),
                         # html.P('Explore the diverse trails of Victoria with our carefully curated selection.',
                         #        style={'font-size': '1em', 'color': '#fff'}),
                         html.P(" "),
-                        html.H4('Keep yourself and your surroundings safe', style={'margin-top': '20px', 'margin-bottom': '10px', 'color': '#F9F1E8', 'margin-left':'100px'})
+                        html.H4('Keep yourself and your surroundings safe', id = 'text5', style={'margin-top': '20px', 'margin-bottom': '10px', 'color': '#F9F1E8', 'margin-left':'100px'})
                     ])
                 ], width=5)
                 ]),
