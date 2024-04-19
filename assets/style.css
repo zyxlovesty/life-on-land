@@ -164,20 +164,20 @@ header
 }
 
 .hover-text {
-    display: none;  /* Initially hidden */
-}
-
-.circle:hover .default-text {
-    display: none;
-}
-
-.circle:hover .hover-text {
+    display: none; /* Initially hidden */
     position: absolute;
     transform: translate(-50%, -50%);
     text-align: center;
-    font-size: 2em;
+    font-size: 1.2em;
     color: #F9F1E8;
     transition: opacity 0.3s, visibility 0.3s;
 }
 
+.circle:hover .default-text {
+    display: none; /* Hide default text on hover */
+}
+
+.circle:hover .hover-text {
+    display: block; /* Show hover text on hover */
+}
 
