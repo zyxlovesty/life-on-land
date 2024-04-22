@@ -17,7 +17,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from database import *
 
-dash.register_page(__name__)
+dash.register_page(__name__, title='WildStep My Trails')
 
 clientside_callback(
     ClientsideFunction(namespace='clientside', function_name='trigger_gsap_animation'),

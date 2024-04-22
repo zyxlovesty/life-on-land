@@ -2,7 +2,7 @@
 
 python -m venv myenv
 C:\Users\milia\AppData\Local\Programs\Python\Python39\python.exe -m venv myenv
-.\myenv\Scripts\Activate
+.\.venv\Scripts\Activate
 
 deactivate
 

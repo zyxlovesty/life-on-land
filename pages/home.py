@@ -7,7 +7,7 @@ from dash import dcc, html, Input, Output, State, ClientsideFunction, callback, 
 from database import *
 import base64
 
-dash.register_page(__name__, path="/")
+dash.register_page(__name__, path="/", title='WildStep')
 
 session, connection = get_session()
 

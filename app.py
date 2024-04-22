@@ -15,10 +15,17 @@ external_stylesheets = [
     dbc.themes.MINTY
 ]
 
-app = dash.Dash(__name__, use_pages=True, external_stylesheets=external_stylesheets, external_scripts=[
+                
+app = dash.Dash(__name__, 
+                use_pages=True,
+                external_stylesheets=external_stylesheets,
+                external_scripts=[
     'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js'],
-    suppress_callback_exceptions=True, prevent_initial_callbacks="initial_duplicate")
+                suppress_callback_exceptions=True,
+                prevent_initial_callbacks="initial_duplicate", update_title=None,
+                title='WildStep')
+
 
 from pages import home
 from pages import my_trails
@@ -70,5 +77,5 @@ def update_active_link(pathname):
     return home_class, my_trails_class, all_trails_class
 
 if __name__ == '__main__':
-    app.run_server(debug=False, host="0.0.0.0", port=8080)
-    #app.run_server(debug=True)
+    #app.run_server(debug=False, host="0.0.0.0", port=8080)
+    app.run_server(debug=True)
