@@ -38,7 +38,7 @@ app.layout = html.Div([
     dbc.Row([
         dbc.Col(
             html.Header([
-                html.A('WildStep', href='#', className='logo'),
+                html.A('WildStep', href='/', className='logo'),
                 html.Ul([
                     html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
@@ -71,7 +71,7 @@ html.Footer(
     [Input('url', 'pathname')]
 )
 def update_active_link(pathname):
-    home_class = 'active' if pathname == '/' else ''
+    home_class = 'active' if pathname == '/home' or pathname == "/" else ''
     my_trails_class = 'active' if pathname == '/my-trails' else ''
     all_trails_class = 'active' if pathname == '/species-trails' else ''
     return home_class, my_trails_class, all_trails_class
