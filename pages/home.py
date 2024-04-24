@@ -138,25 +138,26 @@ layout = html.Div([
             html.Div([graph_component], style={'flex': '1', 'padding': '20px'})
         ], style={'display': 'flex'})
     ], id="additional-content", style={'display': 'none'}),
+html.Div([
     html.Div([
-        html.Div([
-            html.A(href="/my-trails", children=[
-                html.Img(src=b64_image('assets/circle1.png'), style={'width': '100%', 'height': 'auto'}),
-                html.P("Over 30 venomous species", className="default-text", style={'top': '50%', 'left': '55%'}),
-                html.P("Get real-time updates on your hike", className="hover-text", style={'top': '50%', 'left': '55%'})
-            ], className="circle", id='right2'),
-            html.A(href="/all-trails", children=[
-                html.Img(src=b64_image('assets/circle2.png'), style={'width': '100%', 'height': 'auto'}),
-                html.P("140 new endangered species", className="default-text", style={'top': '50%', 'left': '50%'}),
-                html.P("Get trails based on species you want to see", className="hover-text", style={'top': '50%', 'left': '50%'})
-            ], className="circle"),
-            html.A(href="/page3", children=[
-                html.Img(src=b64_image('assets/circle3.png'), style={'width': '100%', 'height': 'auto'}),
-                html.P("2700 conservation parks", className="default-text", style={'top': '55%', 'left': '55%'}),
-                html.P("Discover conservation events around you", className="hover-text", style={'top': '55%', 'left': '55%'})
-            ], className="circle", id='left1')
-        ], style={'display': 'flex', 'justify-content': 'space-around', 'align-items': 'center', 'padding': '50px'})
-    ]),
+        html.A(href="/my-trails", children=[
+            html.Img(src=b64_image('assets/circle1.png'), className='hover-effect-image', style={'width': '100%', 'height': 'auto'}),
+            html.P("Over 30 venomous species", className="default-text", style={'position': 'absolute', 'top': '50%', 'left': '55%', 'transform': 'translate(-50%, -50%)'}),
+            html.P("Get real-time updates on your hike", className="hover-text", style={'position': 'absolute', 'top': '50%', 'left': '55%', 'transform': 'translate(-50%, -50%)'})
+        ], className="circle", id='right2', style={'position': 'relative'}),
+        html.A(href="/all-trails", children=[
+            html.Img(src=b64_image('assets/circle2.png'), className='hover-effect-image', style={'width': '100%', 'height': 'auto'}),
+            html.P("140 new endangered species", className="default-text", style={'position': 'absolute', 'top': '50%', 'left': '50%', 'transform': 'translate(-50%, -50%)'}),
+            html.P("Get trails based on species you want to see", className="hover-text", style={'position': 'absolute', 'top': '50%', 'left': '50%', 'transform': 'translate(-50%, -50%)'})
+        ], className="circle", style={'position': 'relative'}),
+        html.A(href="/page3", children=[
+            html.Img(src=b64_image('assets/circle3.png'), className='hover-effect-image', style={'width': '100%', 'height': 'auto'}),
+            html.P("2700 conservation parks", className="default-text", style={'position': 'absolute', 'top': '55%', 'left': '55%', 'transform': 'translate(-50%, -50%)'}),
+            html.P("Discover conservation events around you", className="hover-text", style={'position': 'absolute', 'top': '55%', 'left': '55%', 'transform': 'translate(-50%, -50%)'})
+        ], className="circle", id='left1', style={'position': 'relative'})
+    ], style={'display': 'flex', 'justify-content': 'space-around', 'align-items': 'center', 'padding': '50px', 'position': 'relative'})
+]),
+
     
     html.Div(id='dummy-input', style={'display': 'none'}),
     html.Div(id='dummy-output', style={'display': 'none'}),

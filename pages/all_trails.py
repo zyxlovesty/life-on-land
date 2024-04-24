@@ -66,6 +66,7 @@ def build_trail_card(trail):
     dist_mel = trail['trail_dist_mel']
     time_mel = trail['trail_time_mel']
     loop = trail['trail_loop']
+    
     trail_card = dbc.Row([
                     dbc.Col(html.Img(src=b64_image(f"data/trail_img/{trail_name}.jpg"),
                                  style={'max-width': '100%', 'height': 'auto', 'max-height': '1000px', 'display': 'block'}), width=3),

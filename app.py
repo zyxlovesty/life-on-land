@@ -29,7 +29,7 @@ from pages import all_trails
 server = app.server
 
 app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),  # Add dcc.Location component
+    dcc.Location(id='url', refresh=False),  # Keep track of the URL
     dbc.Row([
         dbc.Col(
             html.Header([
@@ -38,25 +38,30 @@ app.layout = html.Div([
                     html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
                     html.Li(dcc.Link('Species Trails', href='/all-trails', id='all-trails-link', className='navigation-link')),
+                    html.Li(dcc.Link('Events', href='/events', id='events-link', className='navigation-link')),
                 ], className='navigation'),
-
-            ])
+            ], className='fixed-top', style={
+                'background-color': '#F9F1E8',  # Light beige background
+                'box-shadow': '0 4px 6px rgba(0,0,0,0.1)',  # Soft shadow for depth
+                'border-bottom': '2px solid #333'  # Dark border for definition
+            })  # Updated style with shadow and border
         )
     ]),
-    html.Hr(),
-    dash.page_container,
-html.Footer(
-    
+    html.Div([
+        html.Hr(),
+        dash.page_container,
+    ], style={'padding-top': '70px'}),  # Add padding to the top of the main content area
+    html.Footer(
         dbc.Row(
             dbc.Col(
                 html.P("2024 INSynC, LLC All Rights Reserved", className="footer-text", style={'text-align': 'center', 'color': 'white'}),
                 width={'size': 12, 'offset': 3}
             )
         ),
-        style={'background-color': '#112434', 'padding': '20px', 'width': '100%'}  # Add background color and padding
+        style={'background-color': '#112434', 'padding': '20px', 'width': '100%'}
     )
-
 ])
+
 
 # Callback to update the active link based on the current pathname
 @app.callback(
