@@ -40,18 +40,7 @@ def filter_trails(selected_species, difficulty, duration, distance):
     ]
     choices = ['easy', 'medium', 'hard', 'very hard']
     df['calculated_difficulty'] = np.select(conditions, choices, default='easy')
-    print("debug calculated_difficulty:", df['calculated_difficulty'])
-    print("-------------------------")
-    print("debug difficulty:", difficulty)
-    
-    #debugging
 
-    print("val1: ",df['trail_species'].apply(lambda x: all(species in x for species in formatted_selected_species)))
-    print("val2: ", df['calculated_difficulty'] == difficulty)
-    print("val3: ", df['trail_duration'])
-    print("val3:", int(duration))
-    print("val3: ", df['trail_duration'] <= int(duration))
-    print("val4: ", df['trail_dist_mel'] <= int(distance))
 
     # Initial strict filtering
     initial_filtered = df[
@@ -62,7 +51,7 @@ def filter_trails(selected_species, difficulty, duration, distance):
     ]
  
     if not initial_filtered.empty:
-        print("debug1")
+
         return initial_filtered, False  # Return False indicating no relaxation was needed
  
     # If no trails are found, relax to filtering by all selected species
@@ -75,14 +64,12 @@ def filter_trails(selected_species, difficulty, duration, distance):
 
         if not species_filtered.empty:
             
-            print("debug2")
             return species_filtered, True  # Return True indicating some relaxation was needed
  
     # If still no trails, relax further to any one of the selected species
     for species in formatted_selected_species:
         single_species_filtered = df[df['trail_species'].str.contains(species, case=False, na=False)]
         if not single_species_filtered.empty:
-            print("debug3")
             return single_species_filtered, True  # True to indicate relaxation to single species
  
     return pd.DataFrame(), True
