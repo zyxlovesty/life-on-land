@@ -38,11 +38,12 @@ modal = html.Div(
     [
         dbc.Modal(
             [
-                dbc.ModalHeader("Password Required"),
+                dbc.ModalHeader("Password Required", close_button=False),
                 dbc.ModalBody(
                     [
                         html.Label("Password:"),
                         dcc.Input(id="password-input", type="password", autoComplete="off"),
+                        html.Div(id="password-error-message", style={"color": "red"})
                     ]
                 ),
                 dbc.ModalFooter(
@@ -52,6 +53,9 @@ modal = html.Div(
             id="modal",
             is_open=True,  # Open the modal by default
             centered=True,
+            backdrop="static",  # Disable clicking outside to close
+            keyboard=False, #Disable pressing escape key to close
+
         ),
     ]
 )
@@ -100,18 +104,23 @@ def update_active_link(pathname):
     all_trails_class = 'active' if pathname == '/species-trails' else ''
     return home_class, my_trails_class, all_trails_class
 
+
 # Callback to handle password submission
 @app.callback(
-    Output("modal", "is_open"),
+    [Output("modal", "is_open"),
+    Output("password-error-message", "children")],
     [Input("submit-button", "n_clicks")],
     [State("password-input", "value")],
 )
+
 def check_password(n_clicks, password):
     if n_clicks:
         # Check if the password is correct
-        if password == "]l9z4T>7eeZ4":  # Replace "your_password_here" with your actual password
-            return False  # Close the modal if password is correct
-    return True  # Keep the modal open if password is incorrect or if the button hasn't been clicked yet
+        if password == "314x~7!ZPGy!":
+            return False, ""  # Close the modal if password is correct
+        else:
+            return True, "Incorrect password entered"  # Keep the modal open if password is incorrect, display error message
+    return True, ""  # Keep the modal open if the button hasn't been clicked yet
 
 if __name__ == '__main__':
     #app.run_server(debug=False, host="0.0.0.0", port=8080)
