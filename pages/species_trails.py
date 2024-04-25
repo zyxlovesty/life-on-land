@@ -3,59 +3,79 @@ from dash import html, dcc, callback
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ALL
 from dash.exceptions import PreventUpdate
-import pandas as pd
+ 
 import base64
+import pandas as pd
+import numpy as np
 import os
-
-# Assuming you have a database connection function get_session() and a DataFrame df containing species data
+ 
 from database import get_session
-
-# app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+ 
+_, connection = get_session()
+ 
 dash.register_page(__name__, title='WildStep Species Trails')
-
-session, connection = get_session()
-
+ 
 df = pd.read_sql('SELECT * FROM trails', con=connection)
-
+ 
 def load_species_names():
-    species_set = set()
-    for species_list in df['trail_species'].str.split(','):
-        species_set.update([species.strip() for species in species_list])
-    return [{'label': species, 'value': species} for species in sorted(species_set)]
-
-def b64_image(img_path):
-    with open(img_path, 'rb') as f:
-        return 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
-    
-def format_species_name_for_url(species_name):
-    placeholder = "____"  # Using an unlikely placeholder
-    formatted_name = species_name.replace("-", placeholder)
-    formatted_name = formatted_name.replace(" ", "-")
-    formatted_name = formatted_name.replace(placeholder, "--")
-    return formatted_name
+    species_path = 'data/species/'
+    species_files = [f.split('.')[0] for f in os.listdir(species_path) if os.path.isfile(os.path.join(species_path, f))]
+    return [{'label': s.replace('_', ' ').title(), 'value': s} for s in species_files]
+ 
+def b64_image(img):
+    with open(img, 'rb') as f:
+        image = f.read()
+    return 'data:image/png;base64,' + base64.b64encode(image).decode('utf-8')
  
  
-def get_species_name_from_url(formatted_name):
-    placeholder = "____"  # Using an unlikely placeholder
-    original_name = formatted_name.replace("--", placeholder)
-    original_name = original_name.replace("-", " ")
-    original_name = original_name.replace(placeholder, "-")
-    return original_name
-    
-def create_species_card(species_name):
-    image_filename = species_name.replace(" ", "_") + '.jpg'
-    image_path = os.path.join('data/species/', image_filename)
-    url_path = f'/species/{format_species_name_for_url(species_name)}'
-    return dbc.Card(
-        dbc.CardBody([
-            dbc.Button([
-                dbc.CardImg(src=b64_image(image_path), top=True, style={'width': '230px', 'height': '200px', 'object-fit': 'cover'}),
-                html.H5(species_name, className="card-title text-center", style={'color':'#F9F1E8', 'margin-top':'10px'})
-            ], id={'type': 'species-btn', 'index': species_name}, color="link", style={"text-decoration": "none", "color": "inherit"}),
-        ]),
-        style={"width": "18rem", "margin": "10px", "background-color": "#545646"}
-    )
+def filter_trails(selected_species, difficulty, duration, distance):
 
+    formatted_selected_species = [x.replace('_',' ') for x in selected_species]
+
+    conditions = [
+        (df['trail_distance'] <= 5) & (df['trail_ele_gain'] <= 500),  # Easy
+        (df['trail_distance'].between(5, 10)) & (df['trail_ele_gain'].between(500, 1000)),  # Medium
+        (df['trail_distance'].between(10, 15)) & (df['trail_ele_gain'].between(1000, 1500)),  # Hard
+        (df['trail_distance'] > 15) | (df['trail_ele_gain'] > 1500)  # Very Hard
+    ]
+    choices = ['easy', 'medium', 'hard', 'very hard']
+    df['calculated_difficulty'] = np.select(conditions, choices, default='easy')
+    
+    # Initial strict filtering
+    initial_filtered = df[
+        (df['trail_species'].apply(lambda x: all(species in x for species in formatted_selected_species))) &
+        (df['calculated_difficulty'] == difficulty) &
+        (df['trail_duration'] <= int(duration)) &
+        (df['trail_dist_mel'] <= int(distance))
+    ]
+
+    print("debug:", initial_filtered)
+ 
+    if not initial_filtered.empty:
+        print("debug@@")
+        return initial_filtered, False  # Return False indicating no relaxation was needed
+ 
+    # If no trails are found, relax to filtering by all selected species
+    if selected_species:
+        
+        species_filter = df['trail_species'].apply(lambda x: all(species in x for species in formatted_selected_species))
+
+        # Use the combined filter to select rows from the DataFrame
+        species_filtered = df[species_filter]
+
+        if not species_filtered.empty:
+            
+            return species_filtered, True  # Return True indicating some relaxation was needed
+ 
+    # If still no trails, relax further to any one of the selected species
+    for species in selected_species:
+        single_species_filtered = df[df['trail_species'].str.contains(species, case=False, na=False)]
+        if not single_species_filtered.empty:
+            return single_species_filtered, True  # True to indicate relaxation to single species
+ 
+    return pd.DataFrame(), True
+ 
+ 
 def build_trail_card(trail):
     trail_name = trail['trail_name']
     # image_src = f"data/trail_img/{trail_name}.jpg"  # Ensure this path is correct
@@ -66,159 +86,245 @@ def build_trail_card(trail):
     dist_mel = trail['trail_dist_mel']
     time_mel = trail['trail_time_mel']
     loop = trail['trail_loop']
+    looped = ''
+    if loop == 'one way':
+        looped = 'No'
+    elif loop == 'closed loop':
+        looped = 'Yes'
+       
     trail_card = dbc.Row([
-                    dbc.Col(html.Img(src=b64_image(f"data/trail_img/{trail_name}.jpg"),
-                                 style={'max-width': '100%', 'height': 'auto', 'max-height': '1000px', 'display': 'block'}), width=3),
-                    dbc.Col([
-                        html.P(f'{trail_name}', style={'margin-left': '30px', 'text-align': 'justify', 'font-size':'2em', 'color': '#545646'}),
-                        html.P(description, style={'margin-left': '30px', 'text-align': 'justify', 'color':'#545646'}),
-                        html.Div([
-                        dbc.Row([
-                             dbc.Col([
-                                 html.I(
-                                     className="fas fa-clock", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '20px', 'margin-left': '30px'}),
-                                 html.Span(f"Duration: {duration}hours", style={'color': '#808080'}),
-                                 html.Div(""),
-                                 # Mountain icon
-                                 html.I(
-                                     className="fas fa-mountain", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '30px', 'margin-top': '15px'}),
-                                 html.Span(f"Elevation Gain: {elevation_gain}m", style={'color': '#808080'}),
-                                 html.Div(""),
-                                 # Route icon
-                                 html.I(
-                                     className="fas fa-route", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '30px', 'margin-top': '15px'}),
-                                 html.Span(f" Distance: {distance}km", style={'color': '#808080'}),
-                             ], width=4),
-                             dbc.Col([
-                                 html.I(className="fas fa-solid fa-car",
-                                        style={'color': '#808080', 'margin-right': '5px', 'margin-top': '20px', 'margin-left': '200px'}),
-                                 html.Span(f"Drive from Melbourne: {time_mel}hours", style={'color': '#808080'}),
-                                 html.Div(""),
-                                 html.I(
-                                     className="fas fa-map-pin", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '15px', 'margin-left': '200px'}),
-                                 html.Span(f"Distance from Melbourne: {dist_mel}km", style={'color': '#808080'}),
-                                 html.Div(""),
-                                 html.I(
-                                     className="fas fa-redo", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '15px', 'margin-left': '200px'}),
-                                 html.Span(f"Trail route: {loop}", style={'color': '#808080'}),
-                             ], width=8),
-                             ], style={'display': 'flex'}),
-                    ])], width=9)
-            ], style={'margin': '0 30px', 'display': 'flex', 'padding': '40px', 'border': '1.5px solid', 'border-color': '#545646', 'border-radius': '50px', 'box-shadow': '0 2px 4px rgba(0, 0, 0, 0.1)',
-                      'margin-top': '20px', 'margin-bottom': '20px'})
-    
+
+        dbc.Col([
+            html.Img(src=b64_image(f"data/trail_img/{trail_name}.jpg"),
+                     style={'max-width': '100%', 'height': 'auto', 'max-height': '1000px', 'display': 'block', 'border-radius': '10px'})],width=3),
+        dbc.Col([
+            html.P(f'{trail_name}', style={'margin-left': '30px', 'text-align': 'justify', 'font-size':'1em', 'color': '#545646'}),
+            html.P(description, style={'margin-left': '30px', 'text-align': 'justify', 'color':'#545646', 'font-size':'0.9em'})
+        ], width=9),
+        dbc.Col([
+            dbc.Row([
+                dbc.Col([
+                    html.I(
+                        className="fas fa-clock", style={'color': '#808080', 'margin-right': '5px', 'margin-top': '20px', 'margin-left': '30px'}),
+                    html.Span(f"How long you'll be hiking for: {duration}hours", style={'color': '#808080'}),
+                    html.Div(""),
+                    # Mountain icon
+                    html.I(
+                        className="fas fa-mountain", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '30px', 'margin-top': '15px'}),
+                    html.Span(f"How steep it is: {elevation_gain}m", style={'color': '#808080'}),
+                    html.Div(""),
+                    # Route icon
+                    html.I(
+                        className="fas fa-route", style={'color': '#808080', 'margin-right': '5px', 'margin-left': '30px', 'margin-top': '15px'}),
+                    html.Span(f" How much distance you're covering: {distance}km", style={'color': '#808080'}),
+                ], width=12),
+                dbc.Col([
+                    html.I(className="fas fa-solid fa-car",
+                           style={'color': '#808080', 'margin-right': '5px',  'margin-left': '30px', 'margin-top': '15px'}),
+                    html.Span(f"How long before you should leave from Melbourne: {time_mel}hours", style={'color': '#808080'}),
+                    html.Div(""),
+                    html.I(
+                        className="fas fa-map-pin", style={'color': '#808080', 'margin-right': '5px',  'margin-left': '30px', 'margin-top': '15px'}),
+                    html.Span(f"How far it is from Melbourne: {dist_mel}km", style={'color': '#808080'}),
+                    html.Div(""),
+                    html.I(
+                        className="fas fa-redo", style={'color': '#808080', 'margin-right': '5px',  'margin-left': '30px', 'margin-top': '15px'}),
+                    html.Span(f"Will you come back to the same place you parked: {looped}", style={'color': '#808080'}),
+                ], width=12),
+            ], style={'display': 'flex'}),
+        ], width=12)
+    ], style={'margin': '15%', 'display': 'flex', 'padding': '30px', 'border': '1.5px solid', 'border-color': '#545646', 'border-radius': '50px', 'box-shadow': '0 2px 4px rgba(0, 0, 0, 0.1)',
+              'margin-top': '2%', 'margin-bottom': '5%'})
+ 
     return trail_card
-
-species_list = load_species_names()
-cards_per_page = 4
-
+ 
 layout = html.Div([
-    dbc.Container([
-        dbc.Button("Back to all species", id="back-btn", style={'display': 'none'}),
-        html.H3("",id="species-title", style={'display': 'none', 'color': '#545646'}),
+    html.Img(src=b64_image("assets/element2.png"),
+                style={'width':'30%', 'height':'auto', 'z-index':'-1', 'margin-left':'83%', 'top':'0', 'position':'absolute'}),
+   
+    dbc.Container(children=[
+        html.H1("Discover Your Next Hiking Adventure", className="text-center", style={"margin-top": "5%"}),
+        html.P(
+            "Embark on a journey tailored just for you! Answer a series of questions about what you're looking for in a hike, "
+            "and we'll recommend the best trails that match your preferences.",
+            className="lead", style={"padding": "5%", "font-size": "1.2em", 'text-align':'center'}
+        ),
+        dbc.Button("Customize your Trail", id="next-to-species", color="primary", className="d-block mx-auto", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}),
+    ], id='home-container', style={"margin-top": "5%", 'padding':'5%', 'margin-bottom':'10%'}),
+   
+    dbc.Container(children=[
+        html.H3("What specie(s) you want to see on your hike?", className='text-center'),
         dcc.Dropdown(
             id='species-search-dropdown',
             options=load_species_names(),
             searchable=True,
             clearable=True,
+            multi=True,
             placeholder='Search for species...',
             style={
-                'width': '70%',
+                'width': '50%',
+                'height': '10%',
                 'margin': '0 auto',
                 'borderRadius': '20px',
                 'fontFamily': '"Poppins", sans-serif',
                 'fontSize': '16px',
-                'margin-bottom': '30px'
+                'margin-bottom': '5%',
+                'margin-top': '5%'
             }
         ),
-        dbc.Row(id='card-container', children=[
-            dbc.Col(create_species_card(species['value']), width=3) for species in species_list[:cards_per_page]
-        ], justify="around", style={'padding': '20px', 'margin-top': '40px'}),
+        html.Div(id='species-cards-container', style={'margin-right':'5%', 'margin-left':'18%'}),
+        dbc.Button("Next: Difficulty Level >", id="next-to-difficulty", className="d-block mx-auto",
+                   style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'5%'})
+    ], id='species-container', style={"display":"none"}),
+   
+    dbc.Container(children=[
+        html.H3("How much do you want to challenge yourself?", className='text-center'),
+        dcc.RadioItems(
+            options=[
+                {'label': ' Take it easy', 'value': 'easy'},
+                {'label': ' Push a Bit', 'value': 'medium'},
+                {'label': ' Push further', 'value': 'hard'},
+                {'label': ' Go all out', 'value': 'very hard'}
+            ],
+            value='Moderate',
+            id='difficulty-radio',
+            style={'margin-left':'35%', 'margin-top':'5%', 'margin-bottom':'5%', "font-size": "1.2em"}
+        ),
         dbc.Row([
-            dbc.Col(dbc.Button("Previous", id="prev-btn", className="me-2", style={
-                'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top': '30px'}), width="auto"),
-            dbc.Col(dbc.Button("Next", id="next-btn", className="ms-2", style={
-                'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top': '30px'}), width="auto")
-        ], justify="center", className="my-4"),
-    ], style={'padding': '50px', 'margin-top': '40px'})
+            dbc.Col(dbc.Button("< Back: Species", id="back-to-species", color="primary", className="d-block mx-auto", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}), width="auto"),
+            dbc.Col(dbc.Button("Next: Duration of Hike >", id="next-to-duration", color="primary", className="d-block mx-auto", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}), width="auto")
+        ], justify="center", className="my-4")
+    ], id='difficulty-container', style={"display":"none"}),
+   
+    dbc.Container(children=[
+        html.H3("For how long do you want to hike?", className='text-center'),
+        dcc.RadioItems(
+            options=[
+                {'label': '  Less than 1 hour', 'value': '1'},
+                {'label': '  Between 1 to 5 hours', 'value': '5'},
+                {'label': '  Between 5 to 10 hours', 'value': '10'},
+                {'label': '  More than 10 hours', 'value': '30'}
+            ],
+            value='1',
+            id='duration-radio',
+            style={'margin-left':'35%', 'margin-top':'5%', 'margin-bottom':'5%', "font-size": "1.2em"}
+        ),
+        dbc.Row([
+            dbc.Col(dbc.Button("< Back: Difficulty", id="back-to-difficulty", color="primary", className="d-block mx-auto", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}), width="auto"),
+            dbc.Col(dbc.Button("Next: Distance from Melbourne >", id="next-to-dist-mel", color="primary", className="d-block mx-auto", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}), width="auto")
+        ], justify="center", className="my-4")
+    ], id='duration-container', style={"display":"none"}),
+       
+    dbc.Container(children=[
+        html.H3("How far you are willing to travel", className='text-center'),
+        dcc.RadioItems(
+            options=[
+                {'label': '  Within 50km', 'value': '50'},
+                {'label': '  Within 100km', 'value': '100'},
+                {'label': '  Within 300km', 'value': '300'}
+            ],
+            value='50',
+            id='distance-radio',
+            style={'margin-left':'35%', 'margin-top':'5%', 'margin-bottom':'5%', "font-size": "1.2em"}
+        ),
+        dbc.Row([
+            dbc.Col(dbc.Button("< Back: Duration", id="back-to-duration", color="primary", className="d-block mx-auto", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}), width="auto"),
+            dbc.Col(dbc.Button("Recommend Hikes!", id="finish-quiz", color="primary", className="d-block mx-auto", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}), width="auto")
+        ], justify="center", className="my-4")
+    ], id='distance-container', style={"display":"none"}),
+   
+    dbc.Container(children=[
+        dbc.Button("< Get new recommendations", id="new-recomm", color="primary", style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'0%'}),
+        html.H3(id='text-result', children="Placeholder", style={'font-size':'1.2em', 'text-align':'left', 'margin-top':'5%', 'margin-bottom':'5%'}),
+        html.Div(id='trail-cards')
+    ], id='answer-container', style={"display":"none"}),
+ 
+    html.Img(src=b64_image("assets/element3.png"),
+             style={'width': '30%', 'height': 'auto', 'z-index': '-1', 'position': 'absolute', 'bottom': '2%', 'left': '-15%'}),
 ])
-
+ 
 @callback(
-    [Output('card-container', 'children'),
-     Output('species-search-dropdown', 'style'),
-     Output('back-btn', 'style'),
-     Output('prev-btn', 'style'),
-     Output('next-btn', 'style'),
-     Output('species-title', 'children'),
-     Output('species-title', 'style')],
-    [Input('next-btn', 'n_clicks'),
-     Input('prev-btn', 'n_clicks'),
-     Input('species-search-dropdown', 'value'),
-     Input({'type': 'species-btn', 'index': ALL}, 'n_clicks'),
-     Input('back-btn', 'n_clicks')],
+    [
+        Output('home-container', 'style'),
+        Output('species-container', 'style'),
+        Output('difficulty-container', 'style'),
+        Output('duration-container', 'style'),
+        Output('distance-container', 'style'),
+        Output('answer-container', 'style')
+    ],
+    [
+        Input('next-to-species', 'n_clicks'),
+        Input('back-to-species', 'n_clicks'),
+        Input('next-to-difficulty', 'n_clicks'),
+        Input('back-to-difficulty', 'n_clicks'),
+        Input('next-to-duration', 'n_clicks'),
+        Input('back-to-duration', 'n_clicks'),
+        Input('next-to-dist-mel', 'n_clicks'),
+        Input('finish-quiz', 'n_clicks'),
+        Input('new-recomm', 'n_clicks')
+    ],
     prevent_initial_call=True
 )
-def update_ui(n_clicks_next, n_clicks_prev, selected_species, species_btn_clicks, back_click):
+def update_quiz_content(start_clicks, back_species_clicks, next_difficulty_clicks, back_difficulty_clicks, next_dist_clicks, next_duration, back_duration, finish_clicks, new_recomm):
     ctx = dash.callback_context
-
+ 
     if not ctx.triggered:
+        # If no button was clicked yet (this should never happen due to prevent_initial_call=True)
         raise PreventUpdate
-
+ 
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-
-    if 'back-btn' in button_id:
-        # Reset to the default view with all species cards and controls visible
-        return ([dbc.Col(create_species_card(species['value']), width=3) for species in species_list[:cards_per_page]],
-                {'width': '70%','margin': '0 auto','borderRadius': '20px','fontFamily': '"Poppins", sans-serif','fontSize': '16px','margin-bottom': '30px'}, 
-                {'display': 'none'},  # Hide back button
-                {'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top': '30px'}, 
-                {'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top': '30px'},
-                "", {'display': 'none'})  # Show prev and next buttons
-
-    if 'species-btn' in button_id:
-        # Display trails for selected species and hide other controls
-        species_name = eval(button_id)['index']
-        return (display_trails_for_species(species_name),
-                {'display': 'none'}, 
-                {'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top': '30px'},  # Show back button
-                {'display': 'none'}, {'display': 'none'},
-                f"Trails where you can spot {species_name}", {'display': 'block', 'color': '#545646', 'margin-top': '40px', 'margin-bottom': '20px'})  # Hide prev and next buttons
-
-    # Handle pagination or dropdown selection
-    return handle_pagination_and_dropdown(button_id, selected_species)
-
-def handle_pagination_and_dropdown(button_id, selected_species):
-    page_number = getattr(update_ui, 'page_number', 0)
-
-    if 'next-btn' in button_id:
-        page_number += 1
-    elif 'prev-btn' in button_id:
-        page_number = max(0, page_number - 1)
-    elif 'species-search-dropdown' in button_id:
-        page_number = 0  # Reset the pagination on new selection
-
-    setattr(update_ui, 'page_number', page_number)  # Save the new page number
-
-    if selected_species:
-        # Filter only the selected species
-        filtered_species_list = [s for s in species_list if s['value'] == selected_species]
-    else:
-        filtered_species_list = species_list
-
-    start_index = page_number * cards_per_page
-    end_index = start_index + cards_per_page
-    return ([dbc.Col(create_species_card(species['value']), width=3) for species in filtered_species_list[start_index:end_index]],
-                {'width': '70%','margin': '0 auto','borderRadius': '20px','fontFamily': '"Poppins", sans-serif','fontSize': '16px','margin-bottom': '30px'}, 
-                {'display': 'none'},  # Hide back button
-                {'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top': '30px'}, 
-                {'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top': '30px'},
-                "", {'display': 'none'})
-
-
-def display_trails_for_species(species_name):
-    filtered_trails = df[df['trail_species'].str.contains(species_name, case=False)]
-    trails_content = [build_trail_card(trail) for _, trail in filtered_trails.iterrows()]
-    return trails_content
-
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
+ 
+    if button_id == 'next-to-species' or button_id == 'back-to-species' or button_id == 'new-recomm':
+        return {"display":"none"}, {"margin-top": "5%", 'padding':'5%', 'margin-bottom':'10%'}, {"display":"none"}, {"display":"none"}, {"display":"none"}, {"display":"none"}
+    elif button_id == 'next-to-difficulty' or button_id == 'back-to-difficulty':
+        return {"display":"none"}, {"display":"none"}, {"margin-top": "5%", 'padding':'5%', 'margin-bottom':'10%'}, {"display":"none"}, {"display":"none"}, {"display":"none"}
+    elif button_id == 'next-to-duration' or button_id == 'back-to-duration':
+        return {"display":"none"}, {"display":"none"}, {"display":"none"}, {"margin-top": "5%", 'padding':'5%', 'margin-bottom':'10%'}, {"display":"none"}, {"display":"none"}
+    elif button_id == 'next-to-dist-mel':
+        return {"display":"none"}, {"display":"none"}, {"display":"none"}, {"display":"none"}, {"margin-top": "5%", 'padding':'5%', 'margin-bottom':'10%'}, {"display":"none"}
+    elif button_id == 'finish-quiz':
+        # Here you can handle the completion of the quiz, maybe showing results or a thank you message
+        return {"display":"none"}, {"display":"none"}, {"display":"none"}, {"display":"none"}, {"display":"none"}, {"margin-top": "5%", 'padding':'5%', 'margin-bottom':'10%'}
+ 
+    raise PreventUpdate
+ 
+@callback(
+    Output('species-cards-container', 'children'),
+    Input('species-search-dropdown', 'value')
+)
+def update_species_cards(selected_species):
+    if not selected_species:
+        return []
+    return [
+            dbc.Card([
+                # Convert the species name back to the filename format
+                dbc.CardImg(src=b64_image(f"data/species/{species.replace(' ', '_').lower()}.jpg"), top=True, style={'width': '180px', 'height': '150px', 'object-fit': 'cover', 'margin-top':'5%', 'margin-left':'12%'}),
+                dbc.CardBody([
+                    # Display the species name as it appears in the dropdown
+                    html.P(species.replace("_", " "), className="card-title text-center", style={'color':"#545646", 'text-align':'center'}),
+                ])
+            ], className="d-inline-flex m-2", style={"width": "15rem", "margin": "5px", "background-color": "#F9F1E8", 'border':'2.5px solid #545646', 'borderRadius': '15px'})
+        for species in selected_species
+    ]
+   
+@callback(
+    [Output('trail-cards', 'children'),
+     Output('text-result', 'children')],  # Assuming 'match-info' is an element to display match info
+    [Input('finish-quiz', 'n_clicks')],
+    [State('species-search-dropdown', 'value'),
+     State('difficulty-radio', 'value'),
+     State('duration-radio', 'value'),
+     State('distance-radio', 'value')]
+)
+def display_results(n_clicks, selected_species, selected_difficulty, selected_duration, selected_distance):
+    if not n_clicks:
+        raise PreventUpdate
+ 
+    filtered_trails, was_relaxed = filter_trails(selected_species, selected_difficulty, selected_duration, selected_distance)
+    if filtered_trails.empty:
+        return [], "Can't find matches for your preferences, retake the quiz & adjust them!"
+ 
+    cards = [build_trail_card(trail) for index, trail in filtered_trails.iterrows()]
+    match_message = "Trails based on your preferences" if not was_relaxed else "Can't find matches for your preferences, but we think you should check this out!"
+    return cards, match_message
+ 

@@ -116,7 +116,8 @@ def update_active_link(pathname):
 def check_password(n_clicks, password):
     if n_clicks:
         # Check if the password is correct
-        if password == "314x~7!ZPGy!":
+        #if password == "314x~7!ZPGy!":
+        if password == "abc":
             return False, ""  # Close the modal if password is correct
         else:
             return True, "Incorrect password entered"  # Keep the modal open if password is incorrect, display error message
