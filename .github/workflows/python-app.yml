@@ -39,3 +39,6 @@ jobs:
         pip install pytest
         export PYTHONPATH=src
         pytest
+  
+    - name: Setup Python         
+      uses: actions/setup-python@v5.1.0
