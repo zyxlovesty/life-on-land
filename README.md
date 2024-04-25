@@ -9,4 +9,6 @@ deactivate
 gcloud builds submit --tag gcr.io/wild-step/wild_step_app --project=wild-step
 gcloud run deploy --image gcr.io/wild-step/wild_step_app --platform managed --project=wild-step --allow-unauthenticated
 
+gcloud run deploy --image gcr.io/wild-step/wild_step_app --platform managed --project=wild-step --no-allow-unauthenticated
+
 

@@ -4,7 +4,7 @@ import dash
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from dash import callback
 
 # External CSS
@@ -33,7 +33,31 @@ from pages import species_trails
 
 server = app.server
 
+# Define modal content
+modal = html.Div(
+    [
+        dbc.Modal(
+            [
+                dbc.ModalHeader("Password Required"),
+                dbc.ModalBody(
+                    [
+                        html.Label("Password:"),
+                        dcc.Input(id="password-input", type="password", autoComplete="off"),
+                    ]
+                ),
+                dbc.ModalFooter(
+                    dbc.Button("Submit", id="submit-button", color="primary")
+                ),
+            ],
+            id="modal",
+            is_open=True,  # Open the modal by default
+            centered=True,
+        ),
+    ]
+)
+
 app.layout = html.Div([
+    modal,
     dcc.Location(id='url', refresh=False),  # Add dcc.Location component
     dbc.Row([
         dbc.Col(
@@ -75,6 +99,19 @@ def update_active_link(pathname):
     my_trails_class = 'active' if pathname == '/my-trails' else ''
     all_trails_class = 'active' if pathname == '/species-trails' else ''
     return home_class, my_trails_class, all_trails_class
+
+# Callback to handle password submission
+@app.callback(
+    Output("modal", "is_open"),
+    [Input("submit-button", "n_clicks")],
+    [State("password-input", "value")],
+)
+def check_password(n_clicks, password):
+    if n_clicks:
+        # Check if the password is correct
+        if password == "]l9z4T>7eeZ4":  # Replace "your_password_here" with your actual password
+            return False  # Close the modal if password is correct
+    return True  # Keep the modal open if password is incorrect or if the button hasn't been clicked yet
 
 if __name__ == '__main__':
     #app.run_server(debug=False, host="0.0.0.0", port=8080)
