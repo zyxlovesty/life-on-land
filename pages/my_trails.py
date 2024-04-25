@@ -14,8 +14,10 @@ from geopy.distance import geodesic
 import base64
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
+from math import *
+import time
 
-from database import *
+from database import get_session, Trails, Uploads
 
 dash.register_page(__name__, title='WildStep My Trails')
 
@@ -32,7 +34,9 @@ clientside_callback(
     [Input('mytrail-search-dropdown', 'value')]
 )
 
-session, connection = get_session()
+Session, connection = get_session()
+
+df_trails = pd.read_sql('SELECT * FROM trails', con=connection)
 
 external_stylesheets = [
     'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap',
@@ -40,9 +44,6 @@ external_stylesheets = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
     dbc.themes.MINTY
 ]
-
-# df_uploads = pd.read_sql('SELECT * FROM uploads', con=connection)
-df_trails = pd.read_sql('SELECT * FROM trails', con=connection)
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'assets/lifeonland-418914-00a1094d16b6.json'
 
@@ -99,6 +100,45 @@ def b64_image(img):
 def db_img(blob):
     return 'data:image/png;base64,' + base64.b64encode(blob).decode('utf-8')
 
+from math import log, tan, radians, cos, pi
+
+def estimate_zoom(min_lat, max_lat, min_lon, max_lon, map_width_px=400, map_height_px=400):
+    # Constants to adjust sensitivity of zoom calculation
+    BASE_LAT_DIFF = 360 / (2 ** 12)  # Roughly the lat diff for zoom level 12
+    BASE_LON_DIFF = 360 / (2 ** 12)  # Roughly the lon diff for zoom level 12
+
+    # Latitude and Longitude Differences
+    lat_diff = max(max_lat - min_lat, 0.0001)
+    lon_diff = max(max_lon - min_lon, 0.0001)
+
+    # Estimating zoom by comparing actual diff to base diff
+    zoom_lat = log(BASE_LAT_DIFF / lat_diff) / log(2) + 12  # Adjust 12 according to your base zoom level
+    zoom_lon = log(BASE_LON_DIFF / lon_diff) / log(2) + 12
+
+    # Calculate suitable zoom level, ensuring it is within reasonable bounds
+    estimated_zoom = min(zoom_lat, zoom_lon)
+    estimated_zoom = max(min(estimated_zoom, 18), 5)  # Limit zoom levels to between 5 and 18
+
+    return estimated_zoom
+
+MAX_RETRIES = 3
+RETRY_INTERVAL = 5 
+def fetch_data(model):
+    """Attempt to fetch data with retries for handling database connectivity issues."""
+    session = Session()
+    try:
+        for attempt in range(MAX_RETRIES):
+            try:
+                data = session.query(model).all()
+                return data
+            except SQLAlchemyError as e:
+                print(f"Attempt {attempt + 1}: Error fetching data - {e}")
+                session.rollback()
+                time.sleep(RETRY_INTERVAL)
+    finally:
+        session.close()
+    return None
+
 
 layout = dbc.Container(fluid=True, children=[
 
@@ -128,14 +168,10 @@ layout = dbc.Container(fluid=True, children=[
                     ], width=7),
                 dbc.Col([
                     html.Div([
-                        html.Img(src=b64_image('assets/element1.png'), id = 'alert', style={'width':'50%', 'height':'auto', 'margin-left':'1000px', 'z-index':'-1'}),
-                        html.H2('Be Alert.', id = 'text4',style={'font-size': '3em', 'color': '#F9F1E8', 'margin-bottom': '10px', 'margin-top': '-12%', 'margin-left':'120px'}),
-                        # html.P("Embark on a journey through the heart of Victoria's trails, where every step you take reveals the delicate balance of life teeming with unique and endangered species that are struggling to survive.", style={
-                        #     'font-size': '1em', 'color': '#fff'}),
-                        # html.P('Explore the diverse trails of Victoria with our carefully curated selection.',
-                        #        style={'font-size': '1em', 'color': '#fff'}),
+                        html.Img(src=b64_image('assets/element1.png'), id = 'alert', style={'width':'50%', 'height':'auto', 'margin-left':'1050px', 'z-index':'-1'}),
+                        html.H2('Be Alert.', id = 'text4',style={'font-size': '3em', 'color': '#F9F1E8', 'margin-bottom': '10px', 'margin-top': '-12%', 'margin-left':'50px', 'text-align':'center'}),
                         html.P(" "),
-                        html.H4('Keep yourself and your surroundings safe', id = 'text5', style={'margin-top': '20px', 'margin-bottom': '10px', 'color': '#F9F1E8', 'margin-left':'120px'})
+                        html.H4('Keep yourself and your surroundings safe', id = 'text5', style={'margin-top': '20px', 'margin-bottom': '10px', 'color': '#F9F1E8', 'margin-left':'50px', 'text-align':'center'})
                     ])
                 ], width=5)
                 ]),
@@ -172,7 +208,7 @@ layout = dbc.Container(fluid=True, children=[
                                         children=html.Div([html.I(className="fas fa-solid fa-upload"),
                                                            '   Found something interesting? Upload it!'], style={'margin-top': '10px'}),
                                         style={'display': 'block', 'width': '100%', 'height': '50px',
-                                               'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
+                                               'color': '#545646', 'backgroundColor': '#e8dfd4', 'lineHeight': '50px',
                                                'border': 'none', 'borderRadius': '20px', 'textAlign': 'center',
                                                'cursor': 'pointer', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'},  # Initial style (disabled)
                                         accept='.png,.jpg,.jpeg,.heic',
@@ -215,9 +251,9 @@ layout = dbc.Container(fluid=True, children=[
                             )
                         ],
                         style={'width': 'auto', 'height': '500px', 'margin-top': '40px',
-                               'margin-bottom': '40px', 'margin-right': '40px'},
+                               'margin-bottom': '40px', 'margin-right': '40px', 'borderRadius':'30px'},
                         center=(-37.8136, 144.9631),
-                        zoom=12
+                        zoom=10
                     ),
                 ], width=15, lg=7),  # Map takes up 6 columns on large screens, full width on smaller ones
   # Make the column a flex container
@@ -260,22 +296,22 @@ def update_upload_style_and_tooltip(position, trail_value, style):
     # Check if both the location is shared (position is not None) and a trail is selected (trail_value is not None)
     if position and trail_value:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#e8dfd4', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'auto',
                 'cursor': 'pointer', 'transition': 'all 0.2s ease-in-out', 'opacity': '1'}, False, {'display': 'none'}
     elif position and not trail_value:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#e8dfd4', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'none',
                 'cursor': 'not-allowed', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'}, False, {'display': 'block'}
     elif trail_value and not position:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#e8dfd4', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'none',
                 'cursor': 'not-allowed', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'}, False, {'display': 'block'}
     else:
         return {'display': 'block', 'width': '100%', 'height': '50px',
-                'color': '#545646', 'backgroundColor': '#F9F1E8', 'lineHeight': '50px',
+                'color': '#545646', 'backgroundColor': '#e8dfd4', 'lineHeight': '50px',
                 'border': 'none', 'borderRadius': '20px', 'textAlign': 'center', 'pointerEvents': 'none',
                 'cursor': 'not-allowed', 'transition': 'all 0.2s ease-in-out', 'opacity': '0.6'}, False, {'display': 'block'}
 
@@ -305,14 +341,6 @@ def toggle_location_error_modal(close_clicks, position_error, is_open):
     [State('too-far-modal', 'is_open')],
     prevent_initial_call=True
 )
-# @callback(
-#     Output('too-far-modal', 'is_open'),
-#     [Input('close-too-far-modal', 'n_clicks'),
-#      Input('geo', 'position')],
-#     [State('mytrail-search-dropdown', 'value'),
-#      State('too-far-modal', 'is_open')],
-#     prevent_initial_call=True
-# )
 def handle_too_far_modal(close_clicks, position, selected_trail, is_open):
     ctx = dash.callback_context
     if not ctx.triggered:
@@ -363,8 +391,9 @@ def handle_upload(contents, local_date, position, position_error):
     except:
         return "There was a problem in your image, try again"
     try:
+        session = Session()
         # Attempt to fetch data within a transaction
-        session.begin()  # Start a new transaction
+        # session.begin()  # Start a new transaction
         last_row = session.query(Uploads).order_by(Uploads.upload_id.desc()).first()
         last_row_id = last_row.upload_id
         new_upload = Uploads(
@@ -379,7 +408,9 @@ def handle_upload(contents, local_date, position, position_error):
         session.commit()
         session.close()
     except SQLAlchemyError as e:
+        session = Session()
         session.rollback()  # Roll back the transaction if an error occurs
+        session.close()
         # print("Error fetching data from the database: ", e)
         return "There was a problem in your image, try again"
 
@@ -387,110 +418,77 @@ def handle_upload(contents, local_date, position, position_error):
 
 
 @callback(
-    [Output('myimage-layer', 'children')],
+    Output('myimage-layer', 'children'),
     [Input('upload-image', 'contents'),
      Input('mytrail-search-dropdown', 'value'),
      Input('geo', 'position'),
      Input('interval-component', 'n_intervals')],
-    [State('mytrail-map', 'zoom')]  # Include map zoom as state
+    [State('mytrail-map', 'zoom')]
 )
 def display_image_marker(contents, trail, user_position, n, zoom):
-    markers = []
     if not trail:
-        return [dash.no_update]
+        return []
 
     markers = []
-    if not trail:
-        return [dash.no_update]
-
-    # Extract user's latitude and longitude from the position data
+    print('no marker ',markers)
     if user_position:
-        user_lat = user_position['lat']
-        user_lon = user_position['lon']
-        # Create a marker for the user's position
         user_marker = dl.Marker(
-            icon={
-                "iconUrl": 'assets/hiker.png',
-                "iconSize": [zoom * 4, zoom * 4]
-            },
-            position=(user_lat, user_lon),
+            position=(user_position['lat'], user_position['lon']),
+            icon={"iconUrl": 'assets/hiker.png', "iconSize": [zoom * 4, zoom * 4]},
             children=[
                 dl.Tooltip("You are here"),
-                dl.Popup(f"Your location: Latitude {user_lat}, Longitude {user_lon}")
+                dl.Popup(f"Your location: Latitude {user_position['lat']}, Longitude {user_position['lon']}")
             ])
         markers.append(user_marker)
 
+    # Load trail GPX data
     gpx_path = os.path.join('data/trails', f'{trail}.gpx')
     trail_points = gpx_to_points(gpx_path).coords
+    start_marker = dl.Marker(position=trail_points[0], children=[dl.Tooltip("Start")], icon={"iconUrl": 'assets/start.png', "iconSize": [zoom * 10, zoom * 10]})
+    end_marker = dl.Marker(position=trail_points[-1], children=[dl.Tooltip("Finish")], icon={"iconUrl": 'assets/finish.png', "iconSize": [zoom * 10, zoom * 10]})
+    markers.extend([start_marker, end_marker])
 
-    # Start and finish markers with a custom className for targeting
-    start_marker = dl.Marker(
-        position=trail_points[0],
-        children=[dl.Tooltip("Start")],
-        icon={
-            "iconUrl": 'assets/start.png',
-            "iconSize": [zoom * 10, zoom * 10],  # Dynamically adjust based on zoom
-            "className": "dynamic-icon3"
-        }
-    )
-    finish_marker = dl.Marker(
-        position=trail_points[-1],
-        children=[dl.Tooltip("Finish")],
-        icon={
-            "iconUrl": 'assets/finish.png',
-            "iconSize": [zoom * 10, zoom * 10],  # Dynamically adjust based on zoom
-            "className": "dynamic-icon3"
-        }
-    )
-    markers.extend([start_marker, finish_marker])
-    try:
-        session.begin()
-        # df_uploads = pd.read_sql('SELECT * FROM uploads', con=connection)
-        uploads = session.query(Uploads).all()
-        df_uploads = pd.DataFrame(columns=['upload_id', 'upload_lat', 'upload_long',
-                                           'upload_time', 'upload_img', 'upload_species'])
+    # Fetch upload data with retry logic
+    uploads = fetch_data(Uploads)
+    if uploads:
         for upload in uploads:
-            df_uploads.loc[upload.upload_id-1, 'upload_id'] = upload.upload_id
-            df_uploads.loc[upload.upload_id-1, 'upload_lat'] = upload.upload_lat
-            df_uploads.loc[upload.upload_id-1, 'upload_long'] = upload.upload_long
-            df_uploads.loc[upload.upload_id-1, 'upload_time'] = upload.upload_time
-            df_uploads.loc[upload.upload_id-1, 'upload_img'] = upload.upload_img
-            df_uploads.loc[upload.upload_id-1, 'upload_species'] = upload.upload_species
-        session.close()
-    except SQLAlchemyError as e:
-        session.rollback()
-        df_uploads = pd.DataFrame(columns=['upload_id', 'upload_lat', 'upload_long',
-                                           'upload_time', 'upload_img', 'upload_species'])
-    if not df_uploads.empty:
-        print(df_uploads)
-        filtered_df = df_uploads[df_uploads.apply(lambda row: is_within_distance(
-            (row['upload_lat'], row['upload_long']), trail_points), axis=1)]
-        for _, row in filtered_df.iterrows():
-            image_url = db_img(row['upload_img'])
-            image_element = html.Img(src=image_url, style={'width': '100px', 'height': 'auto'})
-            image_marker = dl.Marker(
-                position=[row['upload_lat'], row['upload_long']],
-                children=[dl.Tooltip(children=[image_element, html.P(""), row['upload_species']])],
-                icon={
-                    "iconUrl": 'assets/species.png',
-                    "iconSize": [zoom * 7, zoom * 5],
-                    # "className": "dynamic-icon"  # Use this class to adjust the icon size via JS if needed
-                }
-            )
-            markers.append(image_marker)
-    return [markers]
+            if is_within_distance((upload.upload_lat, upload.upload_long), trail_points):
+                image_url = db_img(upload.upload_img)
+                species_marker = dl.Marker(
+                    position=(upload.upload_lat, upload.upload_long),
+                    children=[dl.Tooltip(children=[html.Img(src=image_url, style={'width': '100px', 'height': 'auto'}), html.P(""), upload.upload_species])],
+                    icon={"iconUrl": 'assets/species.png', "iconSize": [zoom * 7, zoom * 5]})
+                markers.append(species_marker)
 
+    print(f"Total markers for trail '{trail}': {len(markers)}")
+    return markers
 
 @callback(
+    # [Output('mytrail-layer', 'children'), Output('mytrail-map', 'center'), Output('mytrail-map', 'zoom')],
     [Output('mytrail-layer', 'children'), Output('mytrail-map', 'center')],
     [Input('mytrail-search-dropdown', 'value')]
 )
 def update_map(trail_name):
     if not trail_name:
+        print('in no trail')
+        # return [], dash.no_update, dash.no_update
         return [], dash.no_update
     gpx_path = os.path.join('data/trails', f'{trail_name}.gpx')
     line_string = gpx_to_points(gpx_path)
     centroid = line_string.centroid.coords[0]
     positions = list(line_string.coords)
     features = [dl.Polyline(positions=positions, color='blue')]
+    # Calculate the bounds
+    min_lat = min(point[1] for point in positions)
+    max_lat = max(point[1] for point in positions)
+    min_lon = min(point[0] for point in positions)
+    max_lon = max(point[0] for point in positions)
+    # Determine padding
+    # lat_padding = (max_lat - min_lat) * 0.1  # 10% padding
+    # lon_padding = (max_lon - min_lon) * 0.1
+    # # Apply padding
+    # bounds = [(min_lat - lat_padding, min_lon - lon_padding), (max_lat + lat_padding, max_lon + lon_padding)]
+    estimated_zoom = estimate_zoom(min_lat, max_lat, min_lon, max_lon)
+    print(centroid)
+    # return features, centroid, estimated_zoom
     return features, centroid
