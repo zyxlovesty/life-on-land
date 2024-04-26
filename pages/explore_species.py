@@ -13,7 +13,7 @@ from database import get_session
  
 _, connection = get_session()
  
-dash.register_page(__name__, title='WildStep Species Trails')
+dash.register_page(__name__, title='WildStep Explore Species')
  
 df = pd.read_sql('SELECT * FROM trails', con=connection)
  

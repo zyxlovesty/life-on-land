@@ -29,8 +29,7 @@ app = dash.Dash(__name__,
 
 from pages import home
 from pages import my_trails
-from pages import species_trails
-
+from pages import explore_species
 
 
 server = app.server
@@ -72,7 +71,7 @@ app.layout = html.Div([
                 html.Ul([
                     html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
-                    html.Li(dcc.Link('Species Trails', href='/species-trails', id='species-trails-link', className='navigation-link')),
+                    html.Li(dcc.Link('Explore Species', href='/explore-species', id='explore-species-link', className='navigation-link')),
                     html.Li(dcc.Link('Events', href='/events', id='events-link', className='navigation-link')),
                 ], className='navigation'),
             ], className='fixed-top', style={
@@ -102,7 +101,7 @@ html.Footer(
     [
      Output('home-link', 'className'),
      Output('my-trails-link', 'className'),
-     Output('species-trails-link', 'className'),
+     Output('explore-species-link', 'className'),
      Output('events-link', 'className')
      ],
     [Input('url', 'pathname')]
@@ -111,9 +110,9 @@ html.Footer(
 def update_active_link(pathname):
     home_class = 'active' if pathname == '/home' or pathname == "/" else ''
     my_trails_class = 'active' if pathname == '/my-trails' else ''
-    species_trails_class = 'active' if pathname == '/species-trails' else ''
+    explore_species_class = 'active' if pathname == '/explore-species' else ''
     events_class = 'active' if pathname == '/events' else ''
-    return home_class, my_trails_class, species_trails_class, events_class
+    return home_class, my_trails_class, explore_species_class, events_class
 
 
 # Callback to handle password submission
