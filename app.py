@@ -31,6 +31,8 @@ from pages import home
 from pages import my_trails
 from pages import species_trails
 
+
+
 server = app.server
 
 # Define modal content
@@ -66,14 +68,18 @@ app.layout = html.Div([
     dbc.Row([
         dbc.Col(
             html.Header([
-                html.A('WildStep', href='/', className='logo'),
+                html.A('WildStep', href='#', className='logo'),
                 html.Ul([
                     html.Li(dcc.Link('Home', href='/', id='home-link', className='navigation-link')),
                     html.Li(dcc.Link('My Trail', href='/my-trails', id='my-trails-link', className='navigation-link')),
                     html.Li(dcc.Link('Species Trails', href='/species-trails', id='species-trails-link', className='navigation-link')),
+                    html.Li(dcc.Link('Events', href='/events', id='events-link', className='navigation-link')),
                 ], className='navigation'),
-
-            ])
+            ], className='fixed-top', style={
+                'background-color': '#F9F1E8',  # Light beige background
+                'box-shadow': '0 4px 6px rgba(0,0,0,0.1)',  # Soft shadow for depth
+                'border-bottom': '2px solid #333'  # Dark border for definition
+            })  # Updated style with shadow and border
         )
     ]),
     html.Hr(),
@@ -93,16 +99,21 @@ html.Footer(
 
 # Callback to update the active link based on the current pathname
 @app.callback(
-    [Output('home-link', 'className'),
+    [
+     Output('home-link', 'className'),
      Output('my-trails-link', 'className'),
-     Output('species-trails-link', 'className')],
+     Output('species-trails-link', 'className'),
+     Output('events-link', 'className')
+     ],
     [Input('url', 'pathname')]
 )
+
 def update_active_link(pathname):
     home_class = 'active' if pathname == '/home' or pathname == "/" else ''
     my_trails_class = 'active' if pathname == '/my-trails' else ''
-    all_trails_class = 'active' if pathname == '/species-trails' else ''
-    return home_class, my_trails_class, all_trails_class
+    species_trails_class = 'active' if pathname == '/species-trails' else ''
+    events_class = 'active' if pathname == '/events' else ''
+    return home_class, my_trails_class, species_trails_class, events_class
 
 
 # Callback to handle password submission
