@@ -127,12 +127,12 @@ def check_password(n_clicks, password):
     if n_clicks:
         # Check if the password is correct
         #if password == "314x~7!ZPGy!":
-        if password == "abc":
+        if password == "wildstep":
             return False, ""  # Close the modal if password is correct
         else:
             return True, "Incorrect password entered"  # Keep the modal open if password is incorrect, display error message
     return True, ""  # Keep the modal open if the button hasn't been clicked yet
 
 if __name__ == '__main__':
-    #app.run_server(debug=False, host="0.0.0.0", port=8080)
-    app.run_server(debug=True)
+    app.run_server(debug=False, host="0.0.0.0", port=8080)
+    #app.run_server(debug=True)
