@@ -90,14 +90,14 @@ layout = html.Div([
         dbc.Row([
             dbc.Col([
                 # html.Img(src='/assets/element1.png', style={'margin-right':'2500px', 'height':'100%', 'width':'70%', 'margin-left':'0px'}),
-                html.H1('Discover.', style={'font-size': '3em'}),
+                html.H1('Discover.', style={'font-size': '3em', 'color': '#545646' }),
                 html.P(""),
-                html.H1('Educate.', style={'font-size': '3em'}),
+                html.H1('Educate.', style={'font-size': '3em', 'color': '#545646'}),
                 html.P(""),
-                html.H1('Conserve.', style={'font-size': '3em'}),
+                html.H1('Conserve.', style={'font-size': '3em', 'color': '#545646'}),
                 html.P(""),
-                html.P("Join us in exploring and", style={'font-size': '2em'}),
-                html.P("protecting Victoria's biodiversity", style={'font-size': '2em'}),
+                html.P("Join us in exploring and", style={'font-size': '2em', 'color': '#545646'}),
+                html.P("protecting Victoria's biodiversity", style={'font-size': '2em', 'color': '#545646'}),
                 html.Button("Learn More", id="learn-more-btn", n_clicks=0, 
                             style={'text-decoration': 'none', 'padding': '6px 15px', 'background': '#545646', 'color': '#F9F1E8', 'border-radius': '20px', 'margin-top':'30px'}),
             ], id='t1', width=6, lg=7, style={'margin-right':'900px'}),  # This sets the column to take half of the row (6 out of 12 columns)
@@ -105,7 +105,7 @@ layout = html.Div([
                 html.Img(src='/assets/element2.png', id='t2', style={'height': '85%', 'width': '55%', 'margin-left':'1150px', 'margin-bottom':'170px'}),
                 html.Img(src='/assets/home.png', id='t2', style={'height': '60%', 'width': '37%', 'margin-left':'1000px', 'margin-right':'30%', 'margin-bottom':'120px', 'border': '10px solid #545646', 'border-radius': '20px'})
             ], width=6, lg=5)  # This sets the other column also to take half of the row
-        ], style={'display': 'flex'})
+        ], style={'display': 'flex', 'background': '#F9F1E8'})
         # html.Button()
     ]),
     html.Div([

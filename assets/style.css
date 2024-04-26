@@ -9,7 +9,7 @@
 body
 {
     overflow-x: hidden;
-    background: #F9F1E8;
+    background:  #F9F1E8;
     min-height: 100vh;
 }
 header
@@ -24,6 +24,8 @@ header
     align-items: center;
     z-index: 1000;
 }
+
+
 /* img {
  
     width: 200px;
@@ -37,15 +39,20 @@ header
     font-weight: 700;
     font-size: 2em;
     text-decoration: none;
-}
- 
- 
+} 
+/* .logo
+{
+    max-width: 150px;
+    margin-top: -30px;
+} */
+
 .navigation
 {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 40px;
+    margin-bottom: 20px;
 }
 .navigation li
 {
@@ -64,8 +71,6 @@ header
     background: #545646;
     color:#F9F1E8;
 }
-
-
 .parallax
 {
     position: relative;
@@ -81,7 +86,7 @@ header
     left: 0;
     width: 100%;
     pointer-events: none;
-   
+    
 }
 #text
 {
@@ -91,7 +96,7 @@ header
     /* right:200px; */
     transform: translateY(-50%);
     font-size:3.9em;
-    color:#112434;
+    color:#545646;
     max-width: 80%;
 }
 #text2
@@ -103,24 +108,24 @@ header
     max-width: 60%;
    
     font-size:2.3em;
-    color:#063f6e;
+    color:#545646;
 }
 .sec
 {
     position: relative;
     padding: 100px;
-    background: #112434;
+    background: #545646;
 }
 .sec h2
 {
     font-size: 3em;
-    color:#fff;
+    color:#F9F1E8;
     margin-bottom: 10px;
 }
 .sec p
 {
     font-size: 1em;
-    color:#fff;
+    color:#F9F1E8;
     font-weight: 300;
 }
 .sec input[type=text] {
@@ -134,9 +139,10 @@ header
     margin-right: 16px;
     font-size: 17px;
     border-radius: 30px;
-   
+    
   }
-.circle {
+
+  .circle {
     position: relative;
     width: 20%;
     display: inline-block;
@@ -179,5 +185,42 @@ header
 
 .circle:hover .hover-text {
     display: block; /* Show hover text on hover */
+}
+
+.tab-label {
+    padding: 15.5px;
+    font-weight: bold;
+    font-size: 16px; /* Example to increase the font size */
+}
+
+.content {
+    margin-top: 150px;
+    display: flex;
+    justify-content: space-between; /* Ensures that content and image are spaced out */
+}
+
+
+
+.content .heading {
+    width: 50%;
+    margin-left: 50px;
+}
+
+.heading h1 {
+    font-size: 50px; /* Specific style for H1 in heading class */
+}
+
+.heading p {
+    font-size: 20px; /* Assuming you want to set paragraph sizes in heading */
+    line-height: 1.6;
+}
+
+.content .img {
+    width: 37%;
+    height: 37%;
+    display: inline-block;
+    border: 10px solid #545646;
+    border-radius: 20px;
+    margin-right: 50px;
 }
 

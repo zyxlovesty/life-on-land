@@ -7,11 +7,11 @@ Base = declarative_base()
 
 connection = engine.connect()
 Session = sessionmaker(bind=engine)
-session = Session()
+# session = Session()
 
 def get_session():
     # Session = sessionmaker(bind=engine)
-    return session, connection
+    return Session, connection
 
 class Trails(Base):
     __tablename__ = 'trails'
